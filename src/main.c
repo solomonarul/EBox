@@ -3,7 +3,6 @@
 #include "bf/parser.h"
 #include "bf/interpreter.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 
 int main(int argc, char* argv[])

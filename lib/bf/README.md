@@ -7,15 +7,16 @@ This is the BrainFuck module of the emulator.
 It parses the input into a simplified, optimized, internal form which an internal backend will execute.
 
 The backends present are:
-- (TODO): interpreter - simply execute the instructions as is.
-- (TODO): AOT - compiles the result into native code.
+- interpreter - simply execute the instructions as is.
+- (TODO:) compiler - compiles the result into native code.
+    - (optional:) static executables?
 
 ### Machine specification:
 
 The machine consists of:
-- a fixed size memory of 65535 cells (TODO: make dynamic maybe?).
-- an instruction pointer.
-- a memory pointer.
+- a fixed size memory of 65535 cells.
+- a 16-bit instruction pointer => max program size of 65535 characters.
+- a 16-bit memory pointer.
 
 ### Language specification:
 
