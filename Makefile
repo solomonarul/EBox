@@ -17,7 +17,7 @@ bur:
 	@cmake --build build
 
 r:
-	@./build/${TARGET} ./samples/squares.b
+	@./build/${TARGET} ./samples/bf/xmastree.b
 
 t:
 	@valgrind ./build/${TARGET}_tests

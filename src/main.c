@@ -3,7 +3,6 @@
 #include "bf/parser.h"
 #include "bf/interpreter.h"
 
-#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -24,11 +23,7 @@ int main(int argc, char* argv[])
 
     bf_interpreter_t engine;
     bf_interpreter_init(&engine, stdin, stdout, parsed_input);
-    clock_t time; 
-    time = clock(); 
     bf_interpreter_run(&engine);
-    time = clock() - time;
     bf_interpreter_free(engine);
-    printf("\nProgram took %fs to execute.\n\n", ((double)time)/CLOCKS_PER_SEC);
     return EXIT_STATUS_SUCCESS;
 }
