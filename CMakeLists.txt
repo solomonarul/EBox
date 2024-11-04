@@ -51,3 +51,27 @@ target_link_libraries(
         util
         bf
 )
+
+file(
+    GLOB_RECURSE
+    ${PROJECT_NAME}_BENCH_SOURCES
+    "bench/*.c"
+)
+
+add_executable(
+    ${PROJECT_NAME}_bench
+    ${${PROJECT_NAME}_BENCH_SOURCES}
+)
+
+target_include_directories(
+    ${PROJECT_NAME}_bench
+    PUBLIC
+        inc/
+)
+
+target_link_libraries(
+    ${PROJECT_NAME}_bench
+    PUBLIC
+        util
+        bf
+)

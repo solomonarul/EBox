@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
         return EXIT_STATUS_FAILURE;
     }
 
-    FILE* input = fopen(argv[1], "r");
+    FILE* input = fopen(argv[1], "rb");
     char* input_data = file_read_all(input);
     fclose(input);
 

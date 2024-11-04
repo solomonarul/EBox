@@ -17,7 +17,10 @@ bur:
 	@cmake --build build
 
 r:
-	@./build/${TARGET} ./samples/bf/squares.b
+	@./build/${TARGET} ./samples/bf/mandlebrot.b
 
 t:
 	@valgrind ./build/${TARGET}_tests
+
+b:
+	@./build/${TARGET}_bench

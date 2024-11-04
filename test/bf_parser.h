@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include <string.h>
 
 void bf_parser_test()
 {
