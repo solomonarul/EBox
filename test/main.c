@@ -3,6 +3,7 @@
 
 int main(int argc, char* argv[])
 {
+    UNUSED(argc); UNUSED(argv);
     printf("\nUtils tests:\n");
     dynarray_test();
     printf("BF tests:\n");

@@ -39,7 +39,7 @@ void bf_bench(const char* path, const char* input_path)
     bf_interpreter_free(engine);
 }
 
-void bf_run_bench()
+void bf_run_bench(void)
 {
     bf_bench("./samples/bf/sierpinski.b", NULL);
     bf_bench("./samples/bf/squares.b", NULL);

@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-void dynarray_test()
+void dynarray_test(void)
 {
     dynarray_t test_array;
     dynarray_init(&test_array, sizeof(uint8_t), 10);
@@ -22,7 +22,7 @@ void dynarray_test()
         uint8_t* current_element = dynarray_get(test_array, index);
         *current_element = index;
     }
-    uint8_t sum = 0;
+    uint8_t sum = 0; UNUSED(sum);
     for(uint32_t index = 0; index < test_array.size; index++)
         sum += *(uint8_t*)dynarray_get(test_array, index);
     assert(sum == 45);

@@ -4,6 +4,11 @@ add_subdirectory(lib)
 
 project(EBox)
 
+set(
+    ${PROJECT_NAME}_COMPILE_FLAGS
+    "-Wall" "-Wextra" "-Wpedantic" "-Werror"
+)
+
 file(
     GLOB_RECURSE
     ${PROJECT_NAME}_SOURCES
@@ -26,6 +31,12 @@ target_link_libraries(
     PUBLIC
         util
         bf
+)
+
+target_compile_options(
+    ${PROJECT_NAME}
+    PUBLIC
+        ${${PROJECT_NAME}_COMPILE_FLAGS}
 )
 
 file(
@@ -52,6 +63,12 @@ target_link_libraries(
         bf
 )
 
+target_compile_options(
+    ${PROJECT_NAME}_tests
+    PUBLIC
+        ${${PROJECT_NAME}_COMPILE_FLAGS}
+)
+
 file(
     GLOB_RECURSE
     ${PROJECT_NAME}_BENCH_SOURCES
@@ -74,4 +91,10 @@ target_link_libraries(
     PUBLIC
         util
         bf
+)
+
+target_compile_options(
+    ${PROJECT_NAME}_bench
+    PUBLIC
+        ${${PROJECT_NAME}_COMPILE_FLAGS}
 )

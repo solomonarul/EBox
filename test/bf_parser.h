@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-void bf_parser_test()
+void bf_parser_test(void)
 {
     const char* test_input = "+++-[>+<].,";
     dynarray_t parsed_input = bf_parse_string(test_input);
@@ -43,7 +43,7 @@ void bf_parser_test()
             .type = IN,
             .args = -1
         }
-    };
+    }; UNUSED(expected_result);
 
     for(uint32_t index = 0; index < 8; index++)
         assert(memcmp((bf_instruction_t*)dynarray_get(parsed_input, index), &expected_result[index], sizeof(bf_instruction_t)) == 0);
