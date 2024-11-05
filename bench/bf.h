@@ -45,6 +45,7 @@ void bf_run_bench(void)
     bf_bench("./samples/bf/sierpinski.b", NULL);
     bf_bench("./samples/bf/squares.b", NULL);
     bf_bench("./samples/bf/collatz.b", "./samples/bf/collatz.in");
+    bf_bench("./samples/bf/factor.b", "./samples/bf/factor.in");
     bf_bench("./samples/bf/mandlebrot.b", NULL);
     bf_bench("./samples/bf/hanoi.b", NULL);
 }

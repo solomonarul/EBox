@@ -1,8 +1,11 @@
 # This Makefile is meant to be used only in development environments.
 
-.DEFAULT_GOAL := r
+.DEFAULT_GOAL := _bruh
 
 TARGET = EBox
+
+_bruh:
+	@echo "You didn't read the README, did you?"
 
 c:
 	@cmake -E remove_directory build

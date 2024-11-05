@@ -4,7 +4,7 @@
 
 This is the BrainFuck module of the emulator.
 
-It parses the input into a simplified, optimized, internal form which an internal backend will execute.
+It parses the input into a simplified, optimized, internal form which a backend will execute.
 
 The backends present are:
 - interpreter - simply execute the instructions as is.
