@@ -27,3 +27,6 @@ b:
 
 pp:
 	@awk -F '|' -f ./scripts/bf_parse_performance_log.awk ./performance.log | sort -k1,1nr
+
+cov:
+	@gcov ./build/CMakeFiles/EBox_tests.dir/test/main.c.gcda

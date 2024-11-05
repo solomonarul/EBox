@@ -18,7 +18,7 @@ void* dynarray_get(dynarray_t self, uint32_t index)
     if(index >= self.size)
         return NULL;
 
-    return (void*)(self.data + index * self.element_size);
+    return (void*)((char*)self.data + index * self.element_size);
 }
 
 void dynarray_add(dynarray_t* self, const void* data)
@@ -29,7 +29,7 @@ void dynarray_add(dynarray_t* self, const void* data)
         self->capacity *= 2;
         self->data = realloc(self->data, self->capacity * self->element_size);
     }
-    memcpy(self->data + self->size * self->element_size, data, self->element_size);
+    memcpy((char*)self->data + self->size * self->element_size, data, self->element_size);
     self->size++;
 }
 

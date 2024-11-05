@@ -38,7 +38,7 @@ void bf_interpreter_init(bf_interpreter_t* engine, FILE* input, FILE* output, dy
             }
         }
     }
-    engine->memory = calloc(sizeof(uint8_t), 0x10000);
+    engine->memory = calloc(0x10000, sizeof(uint8_t));
 }
 
 void bf_interpreter_step(bf_interpreter_t* engine)

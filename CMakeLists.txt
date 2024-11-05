@@ -6,7 +6,7 @@ project(EBox)
 
 set(
     ${PROJECT_NAME}_COMPILE_FLAGS
-    "-Wall" "-Wextra" "-Wpedantic" "-Werror"
+    "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-pedantic-errors"
 )
 
 file(
@@ -41,36 +41,6 @@ target_compile_options(
 
 file(
     GLOB_RECURSE
-    ${PROJECT_NAME}_TEST_SOURCES
-    "test/*.c"
-)
-
-add_executable(
-    ${PROJECT_NAME}_tests
-    ${${PROJECT_NAME}_TEST_SOURCES}
-)
-
-target_include_directories(
-    ${PROJECT_NAME}_tests
-    PUBLIC
-        inc/
-)
-
-target_link_libraries(
-    ${PROJECT_NAME}_tests
-    PUBLIC
-        util
-        bf
-)
-
-target_compile_options(
-    ${PROJECT_NAME}_tests
-    PUBLIC
-        ${${PROJECT_NAME}_COMPILE_FLAGS}
-)
-
-file(
-    GLOB_RECURSE
     ${PROJECT_NAME}_BENCH_SOURCES
     "bench/*.c"
 )
@@ -98,3 +68,37 @@ target_compile_options(
     PUBLIC
         ${${PROJECT_NAME}_COMPILE_FLAGS}
 )
+
+if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+    file(
+        GLOB_RECURSE
+        ${PROJECT_NAME}_TEST_SOURCES
+        "test/*.c"
+    )
+
+    add_executable(
+        ${PROJECT_NAME}_tests
+        ${${PROJECT_NAME}_TEST_SOURCES}
+    )
+
+    target_include_directories(
+        ${PROJECT_NAME}_tests
+        PUBLIC
+            inc/
+    )
+
+    target_link_libraries(
+        ${PROJECT_NAME}_tests
+        PUBLIC
+            util
+            bf
+            gcov
+    )
+
+    target_compile_options(
+        ${PROJECT_NAME}_tests
+        PUBLIC
+            ${${PROJECT_NAME}_COMPILE_FLAGS}
+            "-fprofile-arcs" "-ftest-coverage"
+    )
+endif()

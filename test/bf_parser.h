@@ -3,6 +3,7 @@
 #include "bf/parser.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 
 void bf_parser_test(void)
