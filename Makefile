@@ -25,5 +25,5 @@ t:
 b:
 	@./build/${TARGET}_bench
 
-# ./build/EBox ./samples/bf/mandlebrot.b > performance.log
-# awk -F '|' '{ sum[$3] += $2 } END { for (key in sum) print sum[key], "'"|"'" , key  }' performance.log | sort -k1,1nr
+pp:
+	@awk -F '|' -f ./scripts/bf_parse_performance_log.awk ./performance.log | sort -k1,1nr

@@ -35,11 +35,15 @@ void bf_bench(const char* path, const char* input_path)
     time = clock() - time;
     if(input_path != NULL)
         fclose(input_file);
-    printf("\t%s - %fs - %d instr", &path[index], ((double)time) / CLOCKS_PER_SEC, parsed_input.size);
+    printf("\t%s - %fs - %d instr\n", &path[index], ((double)time) / CLOCKS_PER_SEC, parsed_input.size);
     bf_interpreter_free(engine);
 }
 
 void bf_run_bench()
 {
+    bf_bench("./samples/bf/sierpinski.b", NULL);
+    bf_bench("./samples/bf/squares.b", NULL);
+    bf_bench("./samples/bf/collatz.b", "./samples/bf/collatz.in");
     bf_bench("./samples/bf/mandlebrot.b", NULL);
+    bf_bench("./samples/bf/hanoi.b", NULL);
 }

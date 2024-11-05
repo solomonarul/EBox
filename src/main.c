@@ -23,44 +23,14 @@ int main(int argc, char* argv[])
     free(input_data);
 
     bf_interpreter_t engine;
-    bf_interpreter_init(&engine, stdin, NULL, parsed_input, true);
+    bf_interpreter_init(&engine, NULL, NULL, parsed_input, true);
     bf_interpreter_run(&engine);
     if(engine.performance_info_enabled)
-        for(uint32_t index = 0; index < engine.performance_info.size; index++)
-        {
-            bf_interpreter_perfomance_info_t* current_element;
-            current_element = dynarray_get(engine.performance_info, index);
-            printf("%d | %d | ", current_element->PC, current_element->count);
-            
-            // Let's print the sequence.
-            bf_instruction_t* current_instruction;
-            for(uint32_t program_index = current_element->PC; program_index < engine.program.size; program_index++)
-            {
-                current_instruction = dynarray_get(engine.program, program_index);
-                switch(current_instruction->type)
-                {
-                case ADD:
-                    printf("(a ");
-                    break;
-                case MOV:
-                    printf("(m ");
-                    break;
-                case JMP:
-                    printf("(j ");
-                    break;
-                case OUT:
-                    printf("(o ");
-                    break;
-                case IN:
-                    printf("(i ");
-                    break;
-                }
-                printf("%d) ", current_instruction->args);
-                if(current_instruction->type == JMP && current_instruction->args < 0)
-                    break;
-            }
-            printf("\n");
-        }
+    {
+        FILE* performance_output = fopen("./performance.log", "w");
+        bf_interpreter_print_performance_info(engine, performance_output);
+        fclose(performance_output);
+    }
     bf_interpreter_free(engine);
     return EXIT_STATUS_SUCCESS;
 }

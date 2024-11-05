@@ -96,7 +96,7 @@ dynarray_t bf_parse_string(const char* input)
     return result;
 }
 
-void bf_print_internal_form(dynarray_t input)
+void bf_print_internal_form(dynarray_t input, FILE* output)
 {
     for(uint32_t index = 0; index < input.size; index++)
     {
@@ -104,23 +104,23 @@ void bf_print_internal_form(dynarray_t input)
         switch(current_element->type)
         {
         case ADD:
-            printf("ADD %d\n", current_element->args);
+            fprintf(output, "ADD %d\n", current_element->args);
             break;
 
         case MOV:
-            printf("MOV %d\n", current_element->args);
+            fprintf(output, "MOV %d\n", current_element->args);
             break;
 
         case JMP:
-            printf("JMP %d\n", current_element->args);
+            fprintf(output, "JMP %d\n", current_element->args);
             break;
 
         case IN:
-            printf("IN %d\n", current_element->args);
+            fprintf(output, "IN %d\n", current_element->args);
             break;
 
         case OUT:
-            printf("OUT %d\n", current_element->args);
+            fprintf(output, "OUT %d\n", current_element->args);
             break;
         }
     }

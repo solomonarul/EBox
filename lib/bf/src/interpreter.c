@@ -100,6 +100,46 @@ void bf_interpreter_run(bf_interpreter_t* engine)
         bf_interpreter_step(engine);
 }
 
+void bf_interpreter_print_performance_info(bf_interpreter_t engine, FILE* output)
+{
+    bf_instruction_t* current_instruction;
+    bf_interpreter_perfomance_info_t* current_element;
+
+    for(uint32_t index = 0; index < engine.performance_info.size; index++)
+    {
+        current_element = dynarray_get(engine.performance_info, index);
+        fprintf(output, "%d | %d | ", current_element->PC, current_element->count);
+        
+        // Let's print the sequence.
+        for(uint32_t program_index = current_element->PC; program_index < engine.program.size; program_index++)
+        {
+            current_instruction = dynarray_get(engine.program, program_index);
+            switch(current_instruction->type)
+            {
+            case ADD:
+                fprintf(output, "(a ");
+                break;
+            case MOV:
+                fprintf(output, "(m ");
+                break;
+            case JMP:
+                fprintf(output, "(j ");
+                break;
+            case OUT:
+                fprintf(output, "(o ");
+                break;
+            case IN:
+                fprintf(output, "(i ");
+                break;
+            }
+            fprintf(output, "%d) ", current_instruction->args);
+            if(current_instruction->type == JMP && current_instruction->args < 0)
+                break;
+        }
+        fprintf(output, "\n");
+    }
+}
+
 void bf_interpreter_free(bf_interpreter_t engine)
 {
     free(engine.memory);
