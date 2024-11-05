@@ -11,6 +11,7 @@
 
 void bf_bench(const char* path, const char* input_path)
 {
+    // Get the file name for printing later.
     uint32_t index = 0, size = 0;
     while(path[size++]);
     index = size;

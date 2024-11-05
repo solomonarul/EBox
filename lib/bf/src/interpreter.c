@@ -15,6 +15,8 @@ void bf_interpreter_init(bf_interpreter_t* engine, FILE* input, FILE* output, dy
     if(engine->performance_info_enabled)
     {
         dynarray_init(&engine->performance_info, sizeof(bf_interpreter_perfomance_info_t), 0);
+
+        // Find all the top level loop sequences.
         for(uint32_t index = 0; index < engine->program.size; index++)
         {
             bf_instruction_t* current_instruction;
@@ -28,6 +30,7 @@ void bf_interpreter_init(bf_interpreter_t* engine, FILE* input, FILE* output, dy
                     checked_instruction = dynarray_get(engine->program, nextIndex);
                 } while(nextIndex < program.size && checked_instruction->type != JMP);
 
+                // Save if the only jump ahead is backwards, then we are sure the sequence is of type [] and not [[].
                 if(nextIndex == program.size || (checked_instruction->type == JMP && checked_instruction->args > 0))
                     continue;
 
@@ -62,6 +65,7 @@ void bf_interpreter_step(bf_interpreter_t* engine)
         {
             if(engine->performance_info_enabled)
             {
+                // Search linearly trough the sequences and update the right one.
                 bf_interpreter_perfomance_info_t* current_element;
                 for(uint32_t index = 0; index < engine->performance_info.size; index++)
                 {
@@ -105,12 +109,13 @@ void bf_interpreter_print_performance_info(bf_interpreter_t engine, FILE* output
     bf_instruction_t* current_instruction;
     bf_interpreter_perfomance_info_t* current_element;
 
+    // Go trough all the sequences.
     for(uint32_t index = 0; index < engine.performance_info.size; index++)
     {
         current_element = dynarray_get(engine.performance_info, index);
         fprintf(output, "%d | %d | ", current_element->PC, current_element->count);
         
-        // Let's print the sequence.
+        // Prints the sequence.
         for(uint32_t program_index = current_element->PC; program_index < engine.program.size; program_index++)
         {
             current_instruction = dynarray_get(engine.program, program_index);

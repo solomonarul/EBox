@@ -17,13 +17,14 @@ void* dynarray_get(dynarray_t self, uint32_t index)
 {
     if(index >= self.size)
         return NULL;
-
+    
+    // Pointer to data location.
     return (void*)((char*)self.data + index * self.element_size);
 }
 
 void dynarray_add(dynarray_t* self, const void* data)
 {
-    // We reached the point, resize.
+    // We reached the resize point.
     if(self->capacity == self->size)
     {
         self->capacity *= 2;
@@ -39,6 +40,8 @@ void dynarray_pop_back(dynarray_t *self)
         return;
 
     self->size--;
+    
+    // We reached the resize point.
     if(self->size <= self->capacity / 2 && self->capacity > 1)
     {
         self->capacity /= 2;
