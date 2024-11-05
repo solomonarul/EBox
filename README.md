@@ -16,7 +16,7 @@ This is a tool that aims to be able to emulate multiple systems / languages.
 
 > make bur  # Build Unix Release
 
-#### RunL
+#### Run:
 
 > make r
 
