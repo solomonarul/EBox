@@ -119,23 +119,23 @@ void bf_interpreter_print_performance_info(bf_interpreter_t engine, FILE* output
         for(uint32_t program_index = current_element->PC; program_index < engine.program.size; program_index++)
         {
             current_instruction = dynarray_get(engine.program, program_index);
-            fprintf(output, "%d) ", current_instruction->args);
+            fprintf(output, "%d", current_instruction->args);
             switch(current_instruction->type)
             {
             case ADD:
-                fprintf(output, "a");
+                fprintf(output, "a ");
                 break;
             case MOV:
-                fprintf(output, "m");
+                fprintf(output, "m ");
                 break;
             case JMP:
-                fprintf(output, "j");
+                fprintf(output, "j ");
                 break;
             case OUT:
-                fprintf(output, "o");
+                fprintf(output, "o ");
                 break;
             case IN:
-                fprintf(output, "i");
+                fprintf(output, "i ");
                 break;
             }
             if(current_instruction->type == JMP && current_instruction->args < 0)
