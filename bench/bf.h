@@ -29,7 +29,7 @@ void bf_bench(const char* path, const char* input_path)
         input_file = fopen(input_path, "rb");
 
     bf_interpreter_t engine;
-    bf_interpreter_init(&engine, input_file, NULL, parsed_input);
+    bf_interpreter_init(&engine, input_file, NULL, parsed_input, false);
     clock_t time = clock();
     bf_interpreter_run(&engine);
     time = clock() - time;
