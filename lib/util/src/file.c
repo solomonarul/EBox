@@ -15,7 +15,7 @@ void* file_read_all(FILE* file)
 {
     // Read everything into a buffer. This needs to be freed later.
     uint32_t file_size = file_get_size(file);
-    void* input_data = malloc(file_size);
+    void* input_data = calloc(file_size + 1, 1);        // This doesn't include trailing 0x00 so +1.
     fread(input_data, 1, file_size, file);
     return input_data;
 }
