@@ -14,7 +14,7 @@ void bf_interpreter_init(bf_interpreter_t* engine, FILE* input, FILE* output, dy
     engine->performance_info_enabled = enable_performance_info;
     if(engine->performance_info_enabled)
     {
-        dynarray_init(&engine->performance_info, sizeof(bf_interpreter_perfomance_info_t), 0);
+        dynarray_init(&engine->performance_info, sizeof(bf_interpreter_perfomance_info_t), 0, NULL);
 
         // Find all the top level loop sequences.
         for(uint32_t index = 0; index < engine->program.size; index++)
@@ -37,7 +37,7 @@ void bf_interpreter_init(bf_interpreter_t* engine, FILE* input, FILE* output, dy
                 static bf_interpreter_perfomance_info_t element_to_add;
                 element_to_add.count = 0;
                 element_to_add.PC = index;
-                dynarray_add(&engine->performance_info, &element_to_add);
+                dynarray_push_back(&engine->performance_info, &element_to_add);
             }
         }
     }

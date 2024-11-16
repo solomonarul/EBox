@@ -5,7 +5,6 @@
 #include "bf/interpreter.h"
 
 #include <stdlib.h>
-#include <time.h>
 
 int main(int argc, char* argv[])
 {
@@ -23,7 +22,7 @@ int main(int argc, char* argv[])
     free(input_data);
 
     bf_interpreter_t engine;
-    bf_interpreter_init(&engine, NULL, NULL, parsed_input, true);
+    bf_interpreter_init(&engine, stdin, stdout, parsed_input, false);
     bf_interpreter_run(&engine);
     if(engine.performance_info_enabled)
     {

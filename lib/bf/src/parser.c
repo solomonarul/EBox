@@ -23,14 +23,14 @@ void bf_parse_arg_instruction(dynarray_t* result, bf_instruction_type_t type, in
     bf_instruction_t instruction;
     instruction.type = type;
     instruction.args = value;
-    dynarray_add(result, &instruction);
+    dynarray_push_back(result, &instruction);
 }
 
 dynarray_t bf_parse_string(const char* input)
 {
     dynarray_t result;
     bf_instruction_t instruction;
-    dynarray_init(&result, sizeof(bf_instruction_t), 0);
+    dynarray_init(&result, sizeof(bf_instruction_t), 0, NULL);
 
     for(uint32_t index = 0; input[index]; index++)
     {
@@ -55,13 +55,13 @@ dynarray_t bf_parse_string(const char* input)
         case '.':
             instruction.type = OUT;
             instruction.args = -1;
-            dynarray_add(&result, &instruction);
+            dynarray_push_back(&result, &instruction);
             break;
 
         case '[':
             instruction.type = JMP;
             instruction.args = 0;
-            dynarray_add(&result, &instruction);
+            dynarray_push_back(&result, &instruction);
             break;
 
         case ']':
@@ -79,7 +79,7 @@ dynarray_t bf_parse_string(const char* input)
                     current_instruction->args = result.size - index + 1;
                     instruction.type = JMP;
                     instruction.args = index - result.size + 1;
-                    dynarray_add(&result, &instruction);
+                    dynarray_push_back(&result, &instruction);
                     break;
                 }
             }
@@ -91,7 +91,7 @@ dynarray_t bf_parse_string(const char* input)
         case ',':
             instruction.type = IN;
             instruction.args = -1;
-            dynarray_add(&result, &instruction);
+            dynarray_push_back(&result, &instruction);
             break;
 
         default:
