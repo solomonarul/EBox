@@ -1,5 +1,4 @@
 #include "util/defines.h"
-#include "util/dynarray.h"
 #include "util/file.h"
 #include "bf/parser.h"
 #include "bf/interpreter.h"
@@ -18,9 +17,6 @@ int main(int argc, char* argv[])
     char* input_data = file_read_all(input);
     fclose(input);
 
-    dynarray_t parsed_input = bf_parse_string(input_data);
-    free(input_data);
-
     bf_interpreter_config_t config = {
         .input = stdin,
         .output = stdout,
@@ -28,8 +24,10 @@ int main(int argc, char* argv[])
             .enabled = false,
             .log_file = fopen("./performance.log", "w")
         },
-        .program = parsed_input
+        .program = bf_parse_string(input_data)
     };
+    free(input_data);
+
     bf_interpreter_t engine;
     bf_interpreter_init(&engine, config);
     bf_interpreter_run(&engine);
