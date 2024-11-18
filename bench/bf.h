@@ -29,8 +29,17 @@ void bf_bench(const char* path, const char* input_path)
     if(input_path != NULL)
         input_file = fopen(input_path, "rb");
 
+    bf_interpreter_config_t config = {
+        .input = input_file,
+        .output = NULL,
+        .performance_info = {
+            .enabled = false,
+            .log_file = NULL
+        },
+        .program = parsed_input
+    };
     bf_interpreter_t engine;
-    bf_interpreter_init(&engine, input_file, NULL, parsed_input, false);
+    bf_interpreter_init(&engine, config);
     clock_t time = clock();
     bf_interpreter_run(&engine);
     time = clock() - time;

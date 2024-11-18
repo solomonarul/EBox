@@ -21,15 +21,19 @@ int main(int argc, char* argv[])
     dynarray_t parsed_input = bf_parse_string(input_data);
     free(input_data);
 
+    bf_interpreter_config_t config = {
+        .input = stdin,
+        .output = stdout,
+        .performance_info = {
+            .enabled = false,
+            .log_file = fopen("./performance.log", "w")
+        },
+        .program = parsed_input
+    };
     bf_interpreter_t engine;
-    bf_interpreter_init(&engine, stdin, stdout, parsed_input, false);
+    bf_interpreter_init(&engine, config);
     bf_interpreter_run(&engine);
-    if(engine.performance_info_enabled)
-    {
-        FILE* performance_output = fopen("./performance.log", "w");
-        bf_interpreter_print_performance_info(engine, performance_output);
-        fclose(performance_output);
-    }
+    fclose(config.performance_info.log_file);
     bf_interpreter_free(engine);
     return EXIT_STATUS_SUCCESS;
 }
