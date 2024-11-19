@@ -26,6 +26,29 @@ void bf_parse_arg_instruction(dynarray_t* result, bf_instruction_type_t type, in
     dynarray_push_back(result, &instruction);
 }
 
+void bf_check_hotloops(dynarray_t* result)
+{
+    typedef struct {
+        const bf_instruction_t* instruction_list;
+        uint8_t instruction_list_length;
+        bf_instruction_t replacement;
+    } bf_known_loop_t;
+    
+    static const bf_instruction_t CLR_loop[] = {
+        {JMP, 3}, {ADD, 0}, {JMP, -1}
+    };
+
+    static uint8_t known_loop_count = 1;
+
+    static const bf_known_loop_t known_loops[] = {
+        { CLR_loop, 3, {CLR, 0} }
+    };
+
+    UNUSED(known_loop_count);
+    UNUSED(known_loops);
+    UNUSED(result);
+}
+
 dynarray_t bf_parse_string(const char* input)
 {
     dynarray_t result;
@@ -98,6 +121,8 @@ dynarray_t bf_parse_string(const char* input)
             // Ignore
             break;
         }
+
+        bf_check_hotloops(&result);
     }
 
     return result;

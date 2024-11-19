@@ -173,3 +173,12 @@ In the current way that code is parsed, we are generating code in a way very sim
 This can be easily modified to support our new sequence parsing by checking after each addition for known patterns at the top of the stack. These can then be replaced with our custom instructions that do the exact equivalent result.
 
 Replacing just the above mentioned loop gets us the following results in the benchmark:
+
+| Program Name  | Execution Time after #3 | Optimization #3 | Optimizations #1 and #2 | Initial instructions |
+| :-----------: | :---------------------: | :-------------: | :---------------------: | :------------------: |
+| hanoi.b       | ~11.75s                 |                 | 17799                   | 53884                |
+| mandlebrot.b  | ~8.50s                  |                 | 4115                    | 11451                |
+| factor.b      | ~3.50s                  |                 | 1268                    | 3880                 |
+| collatz.b     | ~0.15s                  |                 | 261                     | 395                  |
+| squares.b     | ~3.00ms                 |                 | 127                     | 196                  |
+| sierpinski.b  | ~0.50ms                 |                 | 85                      | 124                  |

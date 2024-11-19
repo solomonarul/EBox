@@ -4,11 +4,14 @@
 #include "util/dynarray.h"
 
 enum {
+    // Basic instructions.
     ADD = 0u,
     MOV,
     JMP,
     OUT,
-    IN
+    IN,
+    // Composite instructions from here.
+    CLR
 };
 typedef uint16_t bf_instruction_type_t;
 
