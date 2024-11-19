@@ -3,7 +3,7 @@
 ### Machine specification:
 
 The machine consists of:
-- a fixed size memory of 65535 cells.
+- a fixed size memory of 65535 8-bit cells.
 - a 16-bit instruction pointer => max program size of 65535 characters.
 - a 16-bit memory pointer.
 

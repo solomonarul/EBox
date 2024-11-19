@@ -52,4 +52,124 @@ After applying those optimizations to the code we can see the results here:
 | squares.b     | ~3.00ms        | 127          | 196                  |
 | sierpinski.b  | ~0.50ms        | 85           | 124                  |
 
-Keep in mind that benchmarks are done on an optimized build on an Intel i7-12700H.
+Keep in mind that benchmarks are done on an optimized build on an Intel i7-12700H using an executable equivalent to [this commit](https://github.com/solomonarul/EBox/commit/bfb5e36f64ed3122c3d8c540906b3d4ea7551859).
+
+## Optimization #3: cleaning hot loops.
+
+Consider this piece of BF code:
+
+> [-]
+
+What does it do? The effect of this sequence is equivalent to setting the current memory value to 0.
+
+Now how long does it take to execute? The answer is the value at the current position, which can get up to 255 as each cell is 8 bit. This can be optimized right away in a single instruction instead.
+
+But how do we know what loops to optimize? I added a performance counter which checks how often each top-level loop in the initial program, as those are most likely to be culprits, run.
+
+This outputs a result following these rules:
+
+> PC | number of executions | sequence
+
+For mandlebrot.b this kind of result is shown:
+
+> 1 | 1 | 12j -1a 1m 2a 3m 5a 1m 2a 1m 1a -6m -10j 
+>
+> 20 | 15 | 3j 9m -1j 
+>
+> 24 | 15 | 3j -9m -1j 
+>
+> 33 | 16 | 3j -1a -1j 
+>
+> 39 | 1 | 3j -9m -1j 
+>
+> 43 | 1 | 3j -1a -1j 
+>
+> 51 | 5 | 6j -1a 9m 1a -9m -4j 
+>
+> 64 | 1 | 3j -9m -1j 
+>
+> 68 | 1 | 3j -1a -1j 
+>
+> 76 | 768 | 3j -1a -1j 
+>
+> 82 | 48 | 3j -9m -1j 
+>
+> 86 | 48 | 3j -1a -1j 
+>
+> 94 | 192 | 6j -1a 9m 1a -9m -4j 
+>
+> 108 | 336 | 6j -1a 9m 1a -9m -4j 
+>
+> 119 | 48 | 3j -9m -1j 
+>
+> 124 | 6192 | 3j -1a -1j 
+>
+> 130 | 99072 | 6j -1a -6m 1a 6m -4j 
+>
+> 137 | 99072 | 10j -1a 6m 1a -2m 1a -3m 1a -1m -8j 
+>
+> 150 | 6192 | 3j -9m -1j
+>
+> and so on... 
+
+This kind of result is not really that useful in practice so I wrote an AWK script that condenses this is a more useful format:
+
+> number of executions | UNIQUE sequence
+
+This groups different occurences of the same loop into a singular result and makes our output way less verbose and generates this result:
+
+> 157090277  6j -1a 9m 1a -9m -4j
+>
+> 46993495  3j -1a -1j
+>
+> 25555337  6j -1a -2m 1a 2m -4j
+>
+> 15623995  3j 9m -1j
+>
+> 14504484  6j -1a 1m 1a -1m -4j
+>
+> 12637333  8j -1a 2m 1a 2m 1a -4m -6j
+>
+> 11813904  8j -1a 2m 1a 1m 1a -3m -6j 
+>
+> 9017333  9j -1m -1a 1m -1a -6m 1a 6m -7j 
+>
+> 8853089  3j -9m -1j 
+>
+> 8466691  6j -1a -5m 1a 5m -4j 
+>
+> 7740892  6j -1a -3m 1a 3m -4j 
+>
+> 7569507  6j -1a 3m 1a -3m -4j 
+>
+> 7493248  6j -1a -36m 1a 36m -4j 
+>
+> 7440200  6j -1a -4m 1a 4m -4j 
+>
+> 6497223  8j -1a 3m 1a 1m 1a -4m -6j
+>
+> and so on...
+
+Much better. We can now see some repeating patterns, for example the pattern:
+
+> 3j xa -1j
+
+Which considering our unsigned cells is equivalent to setting them to 0. Note that these cover all of the following original sequences:
+
+> [-] [+] [++++] [---]
+> 
+> and so on...
+
+These sequences have the exact same result so we can replace them with a single, brand new, CLR instruction in the intermediate representation, thus saving us from executing \<cell size\> * 2 instructions.
+
+### How to identify these sequences in code:
+
+In the current way that code is parsed, we are generating code in a way very similar to a stack:
+- get current instruction
+- see what it is
+- put it onto the stack if a different kind of instruction already exists.
+- if it is the same kind, check to see if its argument can be modified.
+
+This can be easily modified to support our new sequence parsing by checking after each addition for known patterns at the top of the stack. These can then be replaced with our custom instructions that do the exact equivalent result.
+
+Replacing just the above mentioned loop gets us the following results in the benchmark:

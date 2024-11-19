@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
         .input = stdin,
         .output = stdout,
         .performance_info = {
-            .enabled = false,
+            .enabled = true,
             .log_file = fopen("./performance.log", "w")
         },
         .program = bf_parse_string(input_data)
