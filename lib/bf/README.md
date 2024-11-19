@@ -12,3 +12,4 @@ The backends present are:
     - (optional:) static executables?
 
 ### [Machine specification here.](./docs/SPECS.md)
+### [How was this made](./docs/LORE.md)
