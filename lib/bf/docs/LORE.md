@@ -44,12 +44,12 @@ The solution is to just precalculate where the jumps will land at parsing time i
 After applying those optimizations to the code we can see the results here:
 
 | Program Name  | Execution Time | Instructions | Initial instructions |
-| ------------- | -------------- | ------------ | -------------------- |
-| hanoi.b       | ~11.6s         | 17799        | 54592                |
-| mandlebrot.b  | ~8.5s          | 4115         | 11594                |
-| factor.b      | ~3.6s          | 1268         |                      |
-| collatz.b     | ~0.15s         | 261          |                      |
-| squares.b     | ~0.003s        | 127          |                      |
-| sierpinski.b  | ~0.0005s       | 85           |                      |
+| :-----------: | :------------: | :----------: | :------------------: |
+| hanoi.b       | ~11.75s        | 17799        | 53884                |
+| mandlebrot.b  | ~8.50s         | 4115         | 11451                |
+| factor.b      | ~3.50s         | 1268         | 3880                 |
+| collatz.b     | ~0.15s         | 261          | 395                  |
+| squares.b     | ~3.00ms        | 127          | 196                  |
+| sierpinski.b  | ~0.50ms        | 85           | 124                  |
 
 Keep in mind that benchmarks are done on an optimized build on an Intel i7-12700H.

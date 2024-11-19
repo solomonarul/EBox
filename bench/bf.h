@@ -45,7 +45,12 @@ void bf_bench(const char* path, const char* input_path)
     time = clock() - time;
     if(input_path != NULL)
         fclose(input_file);
-    printf("\t%s - %fs - %d instr\n", &path[index], ((double)time) / CLOCKS_PER_SEC, parsed_input.size);
+    double final_time = ((double)time) / CLOCKS_PER_SEC;
+    if(final_time < 0.01)
+        printf("\t%s - %.2fms - %d instr\n", &path[index], final_time * 1000, parsed_input.size);
+    else
+        printf("\t%s - %.2fs - %d instr\n", &path[index], final_time, parsed_input.size);
+    
     bf_interpreter_free(engine);
 }
 
