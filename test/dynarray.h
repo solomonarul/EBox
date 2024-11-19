@@ -8,7 +8,7 @@
 void dynarray_test(void)
 {
     dynarray_t test_array;
-    dynarray_init(&test_array, sizeof(uint8_t), 10);
+    dynarray_init(&test_array, sizeof(uint8_t), 10, NULL);
 
     // 1. Sanity checks.
     assert(test_array.size == 10);
@@ -29,7 +29,7 @@ void dynarray_test(void)
 
     // 3. Add test.
     for(uint32_t index = 10; index < 21; index++)
-        dynarray_add(&test_array, &index);
+        dynarray_push_back(&test_array, &index);
     
     sum = 0;
     for(uint32_t index = 0; index < test_array.size; index++)

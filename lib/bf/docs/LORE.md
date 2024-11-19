@@ -10,7 +10,7 @@ tr -Cd '][.,<>+-'|sed 's/\./putchar(*p);/g;s/,/*p=getchar();/g;s/[+-]/&&*p;/g;s/
 
 (I got it from [here](https://dpk.land/io/bfc))
 
-This apparent simplicity leaves room for a lot of complexity in how we approach this problem. This is what this module solves.
+This apparent simplicity leaves room for a lot of complexity in how we approach this problem. This is what this module attempts to solve.
 
 ## Optimization #1: the obvious.
 
