@@ -205,7 +205,7 @@ void bf_print_internal_form(dynarray_t input, FILE* output)
             break;
 
         case ADDCLR:
-            fprintf(output, "CLR\n");
+            fprintf(output, "ADDCLR\n");
             break;
         }
     }
