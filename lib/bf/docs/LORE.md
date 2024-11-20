@@ -12,6 +12,8 @@ tr -Cd '][.,<>+-'|sed 's/\./putchar(*p);/g;s/,/*p=getchar();/g;s/[+-]/&&*p;/g;s/
 
 This apparent simplicity leaves room for a lot of complexity in how we approach this problem. This is what this module attempts to solve.
 
+For a better understanding, first read the [specs](./SPECS.md).
+
 ## Optimization #1: the obvious.
 
 When looking at the original code of any BF program we find from a first glance that there are long sequences of repeating symbols, such as:
