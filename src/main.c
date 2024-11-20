@@ -1,7 +1,7 @@
 #include "util/defines.h"
 #include "util/file.h"
 #include "bf/parser.h"
-#include "bf/interpreter.h"
+#include "bf/jit.h"
 
 #include <stdlib.h>
 
@@ -17,21 +17,17 @@ int main(int argc, char* argv[])
     char* input_data = file_read_all(input);
     fclose(input);
 
-    bf_interpreter_config_t config = {
+    bf_jit_config_t config = {
         .input = stdin,
         .output = stdout,
-        .performance_info = {
-            .enabled = true,
-            .log_file = fopen("./performance.log", "w")
-        },
         .program = bf_parse_string(input_data)
     };
     free(input_data);
 
-    bf_interpreter_t engine;
-    bf_interpreter_init(&engine, config);
-    bf_interpreter_run(&engine);
-    fclose(config.performance_info.log_file);
-    bf_interpreter_free(engine);
+    bf_jit_t engine;
+    bf_jit_init(&engine, config);
+    dynarray_free(config.program);
+    bf_jit_run(&engine);
+    bf_jit_free(engine);
     return EXIT_STATUS_SUCCESS;
 }

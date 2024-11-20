@@ -1,6 +1,5 @@
 #include "interpreter.h"
 #include "parser.h"
-#include "util/dynarray.h"
 
 #include <stdlib.h>
 
