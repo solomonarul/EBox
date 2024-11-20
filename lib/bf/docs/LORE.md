@@ -43,14 +43,23 @@ The solution is to just precalculate where the jumps will land at parsing time i
 
 After applying those optimizations to the code we can see the results here:
 
-| Program Name  | Execution Time | Instructions | Initial instructions |
-| :-----------: | :------------: | :----------: | :------------------: |
-| hanoi.b       | ~11.75s        | 17799        | 53884                |
-| mandlebrot.b  | ~8.50s         | 4115         | 11451                |
-| factor.b      | ~3.50s         | 1268         | 3880                 |
-| collatz.b     | ~0.15s         | 261          | 395                  |
-| squares.b     | ~3.00ms        | 127          | 196                  |
-| sierpinski.b  | ~0.50ms        | 85           | 124                  |
+| Program Name  | Execution Time |
+| :-----------: | :------------: |
+| hanoi.b       | ~11.75s        |
+| mandlebrot.b  | ~8.50s         |
+| factor.b      | ~3.50s         |
+| collatz.b     | ~0.15s         |
+| squares.b     | ~3.00ms        |
+| sierpinski.b  | ~0.50ms        |
+
+| Program Name  | Instructions | Initial instructions |
+| :-----------: | :----------: | :------------------: |
+| hanoi.b       | 17799        | 53884                |
+| mandlebrot.b  | 4115         | 11451                |
+| factor.b      | 1268         | 3880                 |
+| collatz.b     | 261          | 395                  |
+| squares.b     | 127          | 196                  |
+| sierpinski.b  | 85           | 124                  |
 
 Keep in mind that benchmarks are done on an optimized build on an Intel i7-12700H using an executable equivalent to [this commit](https://github.com/solomonarul/EBox/commit/bfb5e36f64ed3122c3d8c540906b3d4ea7551859).
 
@@ -174,11 +183,59 @@ This can be easily modified to support our new sequence parsing by checking afte
 
 Replacing just the above mentioned loop gets us the following results in the benchmark:
 
-| Program Name  | Execution Time after #3 | Optimization #3 | Optimizations #1 and #2 | Initial instructions |
-| :-----------: | :---------------------: | :-------------: | :---------------------: | :------------------: |
-| hanoi.b       | ~11.75s                 |                 | 17799                   | 53884                |
-| mandlebrot.b  | ~8.50s                  |                 | 4115                    | 11451                |
-| factor.b      | ~3.50s                  |                 | 1268                    | 3880                 |
-| collatz.b     | ~0.15s                  |                 | 261                     | 395                  |
-| squares.b     | ~3.00ms                 |                 | 127                     | 196                  |
-| sierpinski.b  | ~0.50ms                 |                 | 85                      | 124                  |
+| Program Name  | Execution Time after #3 | Execution Time before #3 |
+| :-----------: | :---------------------: | :----------------------: |
+| hanoi.b       | ~0.59s                  | ~11.75s                  |
+| mandlebrot.b  | ~7.50s                  | ~8.50s                   |
+| factor.b      | ~3.00s                  | ~3.50s                   |
+| collatz.b     | ~0.10s                  | ~0.15s                   |
+| squares.b     | ~0.00ms                 | ~3.00ms                  |
+| sierpinski.b  | ~0.00ms                 | ~0.50ms                  |
+
+| Program Name  | Optimization #3 | Optimizations #1 and #2 | Initial instructions |
+| :-----------: | :-------------: | :---------------------: | :------------------: |
+| hanoi.b       | 14853           | 17799                   | 53884                |
+| mandlebrot.b  | 3867            | 4115                    | 11451                |
+| factor.b      | 1208            | 1268                    | 3880                 |
+| collatz.b     | 245             | 261                     | 395                  |
+| squares.b     | 119             | 127                     | 196                  |
+| sierpinski.b  | 81              | 85                      | 124                  |
+
+Because of such low execution times, we will not consider squares.b and sierpinski.b going further.
+
+## Optimization #4: even more hot loops.
+
+Now we can add more loops to the mix. Let's take for example:
+
+> 6j -1a 9m 1a -9m -4j
+
+Which is executed a whole lot in mandlebrot.b. This sequence is equivalent to:
+
+> memory[p + 9] += memory[p]
+> memory[p] = 0
+
+This can be made into a single instruction, let's call it ADDCLR. This instruction now makes use of our parameter based infrastructure, because it actually has one:
+
+> ADDCLR 9
+
+Now let's see the improvements:
+
+| Program Name  | Execution Time after #4 | Execution Time after #3 | Execution Time after #1 and #2 |
+| :-----------: | :---------------------: | :---------------------: | :----------------------------: |
+| hanoi.b       | ~0.30s                  | ~0.59s                  | ~11.75s                        |
+| mandlebrot.b  | ~6.50s                  | ~7.50s                  | ~8.50s                         |
+| factor.b      | ~2.00s                  | ~3.00s                  | ~3.50s                         |
+| collatz.b     | ~0.01s                  | ~0.10s                  | ~0.15s                         |
+
+| Program Name  | Optimization #3 | Optimization #3 | Optimizations #1 and #2 | Initial instructions |
+| :-----------: | :-------------: | :-------------: | :---------------------: | :------------------: |
+| hanoi.b       | 9843            | 14853           | 17799                   | 53884                |
+| mandlebrot.b  | 3162            | 3867            | 4115                    | 11451                |
+| factor.b      | 1073            | 1208            | 1268                    | 3880                 |
+| collatz.b     | 240             | 245             | 261                     | 395                  |
+
+This can be continued ad infinitum until we get entire programs in a single instruction, which is not really that practical.
+
+Let's introduce something even better instad:
+
+## Final optimization: Just in Time compilation.

@@ -92,6 +92,15 @@ void bf_interpreter_step(bf_interpreter_t* engine)
             fprintf(engine->config.output, "%c", engine->memory[engine->I]);
         engine->PC++;
         break;
+    case CLR:
+        engine->memory[engine->I] = 0;
+        engine->PC++;
+        break;
+    case ADDCLR:
+        engine->memory[engine->I + instruction->args] += engine->memory[engine->I];
+        engine->memory[engine->I] = 0;
+        engine->PC++;
+        break;
     }
 }
 
@@ -119,7 +128,8 @@ void bf_interpreter_print_performance_info(bf_interpreter_t engine, FILE* output
         for(uint32_t program_index = current_element->PC; program_index < engine.config.program.size; program_index++)
         {
             current_instruction = dynarray_get(engine.config.program, program_index);
-            fprintf(output, "%d", current_instruction->args);
+            if(current_instruction->args)
+                fprintf(output, "%d", current_instruction->args);
             switch(current_instruction->type)
             {
             case ADD:
@@ -137,6 +147,12 @@ void bf_interpreter_print_performance_info(bf_interpreter_t engine, FILE* output
             case IN:
                 fprintf(output, "i ");
                 break;
+            case CLR:
+                fprintf(output, "clr ");
+                break;       
+            case ADDCLR:
+                fprintf(output, "adcl ");
+                break;     
             }
             if(current_instruction->type == JMP && current_instruction->args < 0)
                 break;

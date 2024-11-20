@@ -11,7 +11,8 @@ enum {
     OUT,
     IN,
     // Composite instructions from here.
-    CLR
+    CLR,
+    ADDCLR
 };
 typedef uint16_t bf_instruction_type_t;
 

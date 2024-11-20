@@ -19,6 +19,14 @@ bur:
 	@cmake -B build -S . --preset unix-release
 	@cmake --build build
 
+bwd:
+	@cmake -B build -S . --preset windows-debug
+	@cmake --build build
+
+bwr:
+	@cmake -B build -S . --preset windows-release
+	@cmake --build build
+
 r:
 	@./build/${TARGET} ./samples/bf/mandlebrot.b
 
