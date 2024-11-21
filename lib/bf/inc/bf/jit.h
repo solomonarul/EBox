@@ -14,8 +14,7 @@ typedef struct {
     FILE* input;
     FILE* output;
     
-    void* code;
-    uint32_t code_size;
+    dynarray_t code;
     uint8_t* memory;
 } bf_jit_t;
 
