@@ -66,6 +66,33 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
                     dynarray_push_back(&engine->code, &code[index]);
             }
             break;
+        case IN:
+            {
+                unsigned char code[] = {
+                    0x48, 0x8B, 0x45, 0xE0,            // mov rax, QWORD PTR [rbp-0x20] (Load FILE* pointer)
+                    0x48, 0x89, 0xC7,                       // mov rdi, rax
+                    0x48, 0xB9,                                // movabs rcx, fgetc (address to be filled dynamically)
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Placeholder for the address
+                    0xFF, 0xD1,                                 // call rcx
+                    0x48, 0x89, 0xC1,                         // mov rcx, rax
+                    0x0F, 0xB7, 0x55, 0xFE,              // movzx edx,WORD PTR [rbp-0x2]
+                    0x48, 0x8B, 0x45, 0xE8,              // mov rax,QWORD PTR [rbp-0x18]
+                    0x48, 0x01, 0xD0,                       // add rax,rdx
+                    0x88, 0x08                                 // mov BYTE PTR [rax],cl
+                };
+
+                // Resolve the address of fgetc
+                uintptr_t fgetc_addr = (uintptr_t)&fgetc;
+
+                // Insert the address of fgetc into the code
+                memcpy(&code[9], &fgetc_addr, sizeof(uintptr_t));
+
+                for (size_t index = 0; index < sizeof(code); index++)
+                    dynarray_push_back(&engine->code, &code[index]);
+
+            }
+            break;
+
         case OUT:
             {
                 unsigned char code[] = {
