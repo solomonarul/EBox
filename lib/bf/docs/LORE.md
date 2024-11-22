@@ -229,7 +229,7 @@ Now let's see the improvements:
 | factor.b      | ~2.00s                  | ~3.00s                  | ~3.50s                         |
 | collatz.b     | ~0.01s                  | ~0.10s                  | ~0.15s                         |
 
-| Program Name  | Optimization #3 | Optimization #3 | Optimizations #1 and #2 | Initial instructions |
+| Program Name  | Optimization #4 | Optimization #3 | Optimizations #1 and #2 | Initial instructions |
 | :-----------: | :-------------: | :-------------: | :---------------------: | :------------------: |
 | hanoi.b       | 9843            | 14853           | 17799                   | 53884                |
 | mandlebrot.b  | 3162            | 3867            | 4115                    | 11451                |

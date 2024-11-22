@@ -39,12 +39,52 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
         const bf_instruction_t instruction = *(bf_instruction_t*)dynarray_get(config.program, index);
         switch(instruction.type)
         {
+        case ADD:
+            {
+                // memory[index] += args
+                unsigned char code[] = {
+                    0x0F, 0xB7, 0x55, 0xFE,              // movzx edx,WORD PTR [rbp-0x2]
+                    0x48, 0x8B, 0x45, 0xE8,              // mov rax,QWORD PTR [rbp-0x18]
+                    0x48, 0x01, 0xD0,                       // add rax,rdx
+                    0x0F, 0xB6, 0x10,                     // movzx edx,BYTE PTR [rax]
+                    0x83, 0xC2, instruction.args & 0xFF,  // add edx, args
+                    0x88, 0x10                                 // mov BYTE PTR [rax],dl
+                };
+                
+                for (size_t index = 0; index < sizeof(code); index++)
+                    dynarray_push_back(&engine->code, &code[index]);
+            }
+            break;
         case MOV:
             {
                 // index += args
                 unsigned char code[] = {
                     0x66, 0x83, 0x45, 0xfe, instruction.args // add WORD PTR [rbp-0x2], args
                 };
+
+                for (size_t index = 0; index < sizeof(code); index++)
+                    dynarray_push_back(&engine->code, &code[index]);
+            }
+            break;
+        case OUT:
+            {
+                unsigned char code[] = {
+                    0x0F, 0xB7, 0x55, 0xFE,              // movzx edx,WORD PTR [rbp-0x2]
+                    0x48, 0x8B, 0x45, 0xE8,              // mov rax,QWORD PTR [rbp-0x18]
+                    0x48, 0x01, 0xD0,                       // add rax,rdx
+                    0x0F, 0xB6, 0x38,                     // movzx edi,BYTE PTR [rax]
+                    0x48, 0x8B, 0x55, 0xD8,          // mov rdx,QWORD PTR [rbp-0x28]
+                    0x48, 0x89, 0xD6,                     // mov rsi,rdx
+                    0x48, 0xB9,                                // movabs rcx, fputc (address to be filled dynamically)
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Placeholder for the address
+                    0xFF, 0xD1                                 // call rcx
+                };
+
+                // Resolve the address of fputc
+                uintptr_t fputc_addr = (uintptr_t)&fputc;
+
+                // Insert the address of fputc into the code
+                memcpy(&code[23], &fputc_addr, sizeof(uintptr_t));
 
                 for (size_t index = 0; index < sizeof(code); index++)
                     dynarray_push_back(&engine->code, &code[index]);
