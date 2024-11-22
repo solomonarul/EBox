@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
     bf_jit_config_t config = {
         .input = stdin,
         .output = stdout,
-        .program = bf_parse_string(input_data)
+        .program = bf_parse_string(input_data, false)
     };
     free(input_data);
 

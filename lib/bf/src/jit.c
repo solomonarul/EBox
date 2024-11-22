@@ -117,6 +117,52 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
                     dynarray_push_back(&engine->code, &code[index]);
             }
             break;
+
+        case JMP:
+            {
+                // Jump behind if memory[index] is not zero.
+                unsigned char code[] = {
+                    0x0F, 0xB7, 0x55, 0xFE,              // movzx edx,WORD PTR [rbp-0x2]
+                    0x48, 0x8B, 0x45, 0xE8,              // mov rax,QWORD PTR [rbp-0x18]
+                    0x48, 0x01, 0xD0,                       // add rax,rdx
+                    0x0F, 0xB6, 0x08,                     // movzx ecx,BYTE PTR [rax]
+                    0x83, 0xF9, 0x00,                     // cmp ecx, 0
+                    0x0F, (instruction.args < 0) ? 0x85 : 0x84, 0x00, 0x00, 0x00, 0x00  // je / jne (address to be filled dynamically)
+                };
+
+                int32_t bytes_count = 0;
+                for(int16_t index2 = 1; index2 < ((instruction.args > 0) ? instruction.args : -instruction.args + 1); index2++)
+                {
+                    const bf_instruction_t instruction2 = *(bf_instruction_t*)dynarray_get(config.program, index + index2 * ((instruction.args > 0) ? 1 : -1));
+                    switch(instruction2.type)
+                    {
+                    case ADD:
+                        bytes_count += 19;
+                        break;
+                    case JMP:
+                        bytes_count += 23;
+                        break;
+                    case OUT:
+                        bytes_count += 33;
+                        break;
+                    case IN:
+                        bytes_count += 35;
+                        break;
+                    case MOV:
+                        bytes_count += 5;
+                        break;
+                    }
+                }
+
+                // Insert the address of the jump target into the code
+                bytes_count = (instruction.args > 0) ? bytes_count : (-bytes_count - (int32_t)sizeof(code));
+                memcpy(&code[19], &bytes_count, sizeof(int32_t));
+
+                for (size_t index = 0; index < sizeof(code); index++)
+                    dynarray_push_back(&engine->code, &code[index]);
+            }
+            break;
+
         default:
             break;
         }

@@ -22,7 +22,7 @@ void bf_bench(const char* path, const char* input_path)
     char* input_data = file_read_all(input);
     fclose(input);
 
-    dynarray_t parsed_input = bf_parse_string(input_data);
+    dynarray_t parsed_input = bf_parse_string(input_data, false);
     free(input_data);
 
     FILE* input_file = NULL;

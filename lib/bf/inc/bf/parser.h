@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdbool.h>
 #include "util/dynarray.h"
 
 enum {
@@ -21,5 +22,5 @@ typedef struct {
     int16_t args;
 } bf_instruction_t;
 
-dynarray_t bf_parse_string(const char* input);
+dynarray_t bf_parse_string(const char* input, bool optimize);
 void bf_print_internal_form(dynarray_t input, FILE* output);

@@ -93,7 +93,7 @@ void bf_check_hotloops(dynarray_t* result)
     }
 }
 
-dynarray_t bf_parse_string(const char* input)
+dynarray_t bf_parse_string(const char* input, bool optimize)
 {
     dynarray_t result;
     bf_instruction_t instruction;
@@ -152,9 +152,8 @@ dynarray_t bf_parse_string(const char* input)
             }
             
             // TODO: unmatched [.
-
-            bf_check_hotloops(&result);
-            
+            if(optimize)
+                bf_check_hotloops(&result);
             break;
         }
         case ',':
