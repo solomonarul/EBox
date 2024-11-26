@@ -3,13 +3,12 @@
 #include "bf/parser.h"
 
 #include <stdio.h>
-#include <string.h>
 #include <assert.h>
 
 void bf_parser_test(void)
 {
     const char* test_input = "+++-[>+<].,";
-    dynarray_t parsed_input = bf_parse_string(test_input);
+    dynarray_t parsed_input = bf_parse_string(test_input, true, true, true);
 
     bf_instruction_t expected_result[8] = {
         {

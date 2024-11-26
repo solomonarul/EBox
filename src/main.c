@@ -1,5 +1,5 @@
-#include "util/defines.h"
 #include "util/file.h"
+#include "util/meta.h"
 #include "bf/parser.h"
 #include "bf/jit.h"
 
@@ -8,6 +8,8 @@
 
 int main(int argc, char* argv[])
 {
+    meta_init(argc, argv);
+
     if(argc < 2)
     {
         printf("\nError: No input file specified.\nUsage: %s <path_to_file>.\n\n", argv[0]);
@@ -21,7 +23,7 @@ int main(int argc, char* argv[])
     bf_jit_config_t config = {
         .input = stdin,
         .output = stdout,
-        .program = bf_parse_string(input_data, false)
+        .program = bf_parse_string(input_data, false, true, true)
     };
     free(input_data);
 

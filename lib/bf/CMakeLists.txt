@@ -10,6 +10,7 @@ set(
 set(
     ${PROJECT_NAME}_LIBRARIES
     util
+    lightning
 )
 
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")

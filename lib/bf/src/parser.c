@@ -93,7 +93,7 @@ void bf_check_hotloops(dynarray_t* result)
     }
 }
 
-dynarray_t bf_parse_string(const char* input, bool optimize)
+dynarray_t bf_parse_string(const char* input, bool optimize, bool has_input, bool has_output)
 {
     dynarray_t result;
     bf_instruction_t instruction;
@@ -120,6 +120,8 @@ dynarray_t bf_parse_string(const char* input, bool optimize)
             break;
 
         case '.':
+            if(!has_output)
+                break;
             instruction.type = OUT;
             instruction.args = -1;
             dynarray_push_back(&result, &instruction);
@@ -143,6 +145,12 @@ dynarray_t bf_parse_string(const char* input, bool optimize)
                 // Found it.
                 if(current_instruction->type == JMP && current_instruction->args == 0)
                 {
+                    if(index == result.size - 1)
+                    {
+                        dynarray_pop_back(&result);
+                        break;
+                    }
+
                     current_instruction->args = result.size - index + 1;
                     instruction.type = JMP;
                     instruction.args = index - result.size + 1;
@@ -157,6 +165,9 @@ dynarray_t bf_parse_string(const char* input, bool optimize)
             break;
         }
         case ',':
+            if(!has_input)
+                break;
+
             instruction.type = IN;
             instruction.args = -1;
             dynarray_push_back(&result, &instruction);

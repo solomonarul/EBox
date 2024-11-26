@@ -241,3 +241,9 @@ This can be continued ad infinitum until we get entire programs in a single inst
 Let's introduce something even better instad:
 
 ## Final optimization: Just in Time compilation.
+
+Firstly I tried rolling out my own machine code which seemed to work at first, reducing the execution time of mandlebrot.b without the hot loops optimizations down to 2s, but as things stood it was too clunky and unstable to be used so I had to make a choice of which library to use.
+
+First was LLVM which was great but also too huge both in size and runtime requirements for my standards. LibJIT from GNU would've been amazing had it been updated after 2020. Every other library existent for this task was also built only for C++ so this removed most of them.
+
+Before I saw the newer GNU project called Lightning. This library had an easy enough API to use and was lightweight enough to make everything work.

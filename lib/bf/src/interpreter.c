@@ -163,5 +163,4 @@ void bf_interpreter_print_performance_info(bf_interpreter_t engine, FILE* output
 void bf_interpreter_free(bf_interpreter_t engine)
 {
     free(engine.memory);
-    dynarray_free(engine.config.program);
 }

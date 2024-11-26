@@ -10,12 +10,11 @@ typedef struct {
     dynarray_t program;
 } bf_jit_config_t;
 
+typedef void (*bf_jit_function_t)(void);
+
 typedef struct {
-    FILE* input;
-    FILE* output;
-    
-    dynarray_t code;
     uint8_t* memory;
+    bf_jit_function_t code;
 } bf_jit_t;
 
 void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config);

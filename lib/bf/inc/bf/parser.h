@@ -22,5 +22,5 @@ typedef struct {
     int16_t args;
 } bf_instruction_t;
 
-dynarray_t bf_parse_string(const char* input, bool optimize);
+dynarray_t bf_parse_string(const char* input, bool optimize, bool has_input, bool has_output);
 void bf_print_internal_form(dynarray_t input, FILE* output);

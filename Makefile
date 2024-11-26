@@ -28,7 +28,7 @@ bwr:
 	@cmake --build build
 
 r:
-	@./build/${TARGET} ./samples/bf/mandlebrot.b
+	@./build/${TARGET} ./samples/bf/test.b
 
 t:
 	@valgrind ./build/${TARGET}_tests
