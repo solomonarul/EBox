@@ -72,39 +72,3 @@ target_compile_options(
     PUBLIC
         ${${PROJECT_NAME}_COMPILE_FLAGS}
 )
-
-if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    file(
-        GLOB_RECURSE
-        ${PROJECT_NAME}_TEST_SOURCES
-        "test/*.c"
-    )
-
-    add_executable(
-        ${PROJECT_NAME}_tests
-        ${${PROJECT_NAME}_TEST_SOURCES}
-    )
-
-    set_property(TARGET ${PROJECT_NAME}_tests PROPERTY C_STANDARD 99)
-
-    target_include_directories(
-        ${PROJECT_NAME}_tests
-        PUBLIC
-            inc/
-    )
-
-    target_link_libraries(
-        ${PROJECT_NAME}_tests
-        PUBLIC
-            util
-            bf
-            gcov
-    )
-
-    target_compile_options(
-        ${PROJECT_NAME}_tests
-        PUBLIC
-            ${${PROJECT_NAME}_COMPILE_FLAGS}
-            "-fprofile-arcs" "-ftest-coverage"
-    )
-endif()

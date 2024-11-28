@@ -30,14 +30,8 @@ bwr:
 r:
 	@./build/${TARGET} ./samples/bf/mandlebrot.b
 
-t:
-	@valgrind ./build/${TARGET}_tests
-
 b:
 	@./build/${TARGET}_bench
 
 pp:
 	@awk -F '|' -f ./scripts/bf_parse_performance_log.awk ./performance.log | sort -k1,1nr
-
-cov:
-	@gcov ./build/CMakeFiles/EBox_tests.dir/test/main.c.gcda

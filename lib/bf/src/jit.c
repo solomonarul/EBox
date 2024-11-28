@@ -11,9 +11,9 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
 {
     if(!jit_global_init)
     {
+        jit_global_init = true;
         init_jit(meta_get_exe_path());
         atexit(finish_jit);
-        jit_global_init = true;
     }
 
     engine->memory = calloc(0x10000, sizeof(char));
