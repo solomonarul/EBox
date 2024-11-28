@@ -109,8 +109,8 @@ void bf_bench(const char* path, const char* input_path, bool optimize)
 
 void bf_run_bench(void)
 {
-    bf_bench("./samples/bf/mandlebrot.b", NULL, false);
-    bf_bench("./samples/bf/hanoi.b", NULL, false);
-    bf_bench("./samples/bf/factor.b", "./samples/bf/factor.in", false);
-    bf_bench("./samples/bf/collatz.b", "./samples/bf/collatz.in", false);
+    bf_bench("./samples/bf/mandlebrot.b", NULL, true);
+    bf_bench("./samples/bf/hanoi.b", NULL, true);
+    bf_bench("./samples/bf/factor.b", "./samples/bf/factor.in", true);
+    bf_bench("./samples/bf/collatz.b", "./samples/bf/collatz.in", true);
 }

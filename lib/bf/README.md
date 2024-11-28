@@ -8,7 +8,7 @@ It parses the input into a simplified, optimized, internal form which a backend 
 
 The backends present are:
 - interpreter - simply execute the instructions as is.
-- (TODO:) AOT compiler - compiles the result into native code.
+- AOT /JIT compiler (in this case they are identical) - compiles the result into native code before execution.
     - (optional:) static executables?
 
 ### [Machine specification here.](./docs/SPECS.md)

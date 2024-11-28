@@ -247,3 +247,35 @@ Firstly I tried rolling out my own machine code which seemed to work at first, r
 First was LLVM which was great but also too huge both in size and runtime requirements for my standards. LibJIT from GNU would've been amazing had it been updated after 2020. Every other library existent for this task was also built only for C++ so this removed most of them.
 
 Before I saw the newer GNU project called Lightning. This library had an easy enough API to use and was lightweight enough to make everything work.
+
+### Implementing each instruction.
+
+GNU Lightning has 2 types of registers: registers which will be restored after a function call (JIT_Vx) and registers which will not (JIT_Rx).
+
+I took the liberty to reserve register JIT_V0 for keeping track of the address of the memory pointer and using register JIT_R0 as a temporary working register.
+
+Implementing MOV was as simple as generating an add for JIT_V0 as there is no need to subtract if the value is negative, as 2's complement helps us with adding negative numbers.
+
+Implementing ADD was just as simple, only difference being loading and storing the result in memory at the address in JIT_V0.
+
+IN and OUT function very similar to eachother, all they need being function calls to standard library functions such as fscanf and fputc.
+
+This is where stuff gets a little bit complicated: computing jumps. When generating the starting jump, when the argument is positive, the instruction must have a forward refference to where the end is, so when we get to the end we must go back and patch the address of the first jump.
+
+After all of these, **and disabling optimizations #3 and #4** we get the following benchmark:
+
+| Program Name  | JIT    | Interpreter | Instructions |
+| :-----------: | :----: | :---------: | :----------: |
+| hanoi.b       | ~3.85s | ~11.70s     | 17511        |
+| mandlebrot.b  | ~0.70s | ~8.45s      | 4108         |
+| factor.b      | ~0.45s | ~3.30s      | 1252         |
+| collatz.b     | ~0.20s | ~1.80s      | 237          |
+
+After enabling and implementing #3 and #4 in the JIT as well, we get the following:
+
+| Program Name  | JIT    | Interpreter | Instructions |
+| :-----------: | :----: | :---------: | :----------: |
+| hanoi.b       | ~3.85s | ~11.70s     | 17511        |
+| mandlebrot.b  | ~0.70s | ~8.45s      | 4108         |
+| factor.b      | ~0.45s | ~3.30s      | 1252         |
+| collatz.b     | ~0.20s | ~1.80s      | 237          |
