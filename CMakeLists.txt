@@ -20,6 +20,8 @@ add_executable(
     ${${PROJECT_NAME}_SOURCES}
 )
 
+set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 99)
+
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
@@ -49,6 +51,8 @@ add_executable(
     ${PROJECT_NAME}_bench
     ${${PROJECT_NAME}_BENCH_SOURCES}
 )
+
+set_property(TARGET ${PROJECT_NAME}_bench PROPERTY C_STANDARD 99)
 
 target_include_directories(
     ${PROJECT_NAME}_bench
@@ -80,6 +84,8 @@ if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
         ${PROJECT_NAME}_tests
         ${${PROJECT_NAME}_TEST_SOURCES}
     )
+
+    set_property(TARGET ${PROJECT_NAME}_tests PROPERTY C_STANDARD 99)
 
     target_include_directories(
         ${PROJECT_NAME}_tests

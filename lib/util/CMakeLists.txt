@@ -33,6 +33,8 @@ add_library(
     ${${PROJECT_NAME}_SOURCES}
 )
 
+set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 99)
+
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
