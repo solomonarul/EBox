@@ -18,16 +18,18 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
     engine->memory = calloc(0x10000, sizeof(char));
     engine->jit_state = jit_new_state();
 
+    // Initialize dynamic arrays for loop start and end pointers
+    dynarray_t loopStart, loopEnd;
+    dynarray_init(&loopStart, sizeof(jit_pointer_t), 0, NULL);
+    dynarray_init(&loopEnd, sizeof(jit_pointer_t), 0, NULL);
+
     #define _jit engine->jit_state
 
     jit_prolog();
     jit_movi(JIT_V0, (jit_word_t)engine->memory);   // V0 is the memory pointer
     // R0 is working register.
 
-    jit_pointer_t loopStart[512];
-    jit_pointer_t loopEnd[512];
     jit_pointer_t jump;
-    uint32_t loop = 0;
 
     for(uint32_t index = 0; index < config.program.size; index++)
     {
@@ -54,17 +56,24 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
             if(instruction->args > 0)
             {
                 // Branch if R1 is zero, this will be emitted in the later branch.
-                loopEnd[loop] = _jit_new_node_pww(engine->jit_state, jit_code_beqi, jit_forward(), JIT_R0, 0); // jit_beqi(jit_forward(), JIT_R0, 0);
-                loopStart[loop] = jit_label();
-                loop++;
+                jit_pointer_t end_label = _jit_new_node_pww(engine->jit_state, jit_code_beqi, jit_forward(), JIT_R0, 0);
+                dynarray_push_back(&loopEnd, &end_label);
+
+                jit_pointer_t start_label = jit_label();
+                dynarray_push_back(&loopStart, &start_label);
             }
             else
             {
-                loop--;
                 // Branch if R1 is not zero.
-                jump = _jit_new_node_pww(engine->jit_state, jit_code_bnei, NULL, JIT_R0, 0);   // jit_bnei(loopStart[loop], JIT_R0, 0);
-                jit_patch(loopEnd[loop]);
-                jit_patch_at(jump, loopStart[loop]);
+                jit_pointer_t start_label = *(jit_pointer_t*)dynarray_get(loopStart, loopStart.size - 1);
+                dynarray_pop_back(&loopStart);
+
+                jit_pointer_t end_label = *(jit_pointer_t*)dynarray_get(loopEnd, loopEnd.size - 1);
+                dynarray_pop_back(&loopEnd);
+
+                jump = _jit_new_node_pww(engine->jit_state, jit_code_bnei, NULL, JIT_R0, 0);
+                jit_patch(end_label);
+                jit_patch_at(jump, start_label);
             }
             break;
 
@@ -109,6 +118,10 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
     jit_epilog();
     engine->code = (bf_jit_function_t)((uintptr_t)jit_emit());
     jit_clear_state();
+
+    // Clean up dynamic arrays
+    dynarray_free(loopStart);
+    dynarray_free(loopEnd);
 
     #undef _jit
 }
