@@ -34,14 +34,20 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
         const bf_instruction_t* instruction = dynarray_get(config.program, index);
         switch(instruction->type)
         {
+            // P += args
         case MOV:
             jit_addi(JIT_V0, JIT_V0, instruction->args);
             break;
+
+            // memory[P] += args
         case ADD:
             jit_ldr_c(JIT_R0, JIT_V0);
             jit_addi(JIT_R0, JIT_R0, instruction->args);
             jit_str_c(JIT_V0, JIT_R0);
             break;
+
+            // jump forward if memory[P] is zero and args > 0
+            // jump backward if memory[P] is not zero and args < 0
         case JMP:
             jit_ldr_c(JIT_R0, JIT_V0);
 
@@ -61,6 +67,8 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
                 jit_patch_at(jump, loopStart[loop]);
             }
             break;
+
+            // fscanf(input, "%c", &memory[P])
         case IN:
             jit_prepare();
             jit_pushargi((jit_word_t)config.input);
@@ -68,12 +76,33 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
             jit_pushargr(JIT_V0);
             jit_finishi((jit_pointer_t)(uintptr_t)fscanf);
             break;
+
+            // fputc(memory[P], output)
         case OUT:
-            jit_ldr_c(JIT_R0, JIT_V0);
-            jit_prepare();
-            jit_pushargr_c(JIT_R0);
-            jit_pushargi((jit_word_t)config.output);
-            jit_finishi((jit_pointer_t)(uintptr_t)fputc);
+            jit_ldr_c(JIT_R0, JIT_V0);                          // R0 = memory[P]
+            jit_prepare();                                      //
+            jit_pushargr_c(JIT_R0);                             // push R0
+            jit_pushargi((jit_word_t)config.output);            // push output
+            jit_finishi((jit_pointer_t)(uintptr_t)fputc);       // call fputc
+            break;
+
+            // memory[P] = 0
+        case CLR:
+            jit_movi(JIT_R0, 0);                                // R0 = 0
+            jit_str_c(JIT_V0, JIT_R0);                          // memory[P] = R0
+            break;
+
+            // memory[P + args] += memory[P]
+            // memory[P] = 0
+        case ADDCLR:
+            jit_movr(JIT_R0, JIT_V0);                           //
+            jit_addi(JIT_R0, JIT_R0, instruction->args);        // R0 = P + args
+            jit_ldr_c(JIT_R1, JIT_R0);                          // R1 = memory[P + args]
+            jit_ldr_c(JIT_R2, JIT_V0);                          // R2 = memory[P]
+            jit_addr(JIT_R1, JIT_R1, JIT_R2);                   // R1 += R2
+            jit_str_c(JIT_R0, JIT_R1);                          // memory[P + args] = R1
+            jit_movi(JIT_R0, 0);                                // R0 = 0
+            jit_str_c(JIT_V0, JIT_R0);                          // memory[P] = 0
             break;
         }
     }

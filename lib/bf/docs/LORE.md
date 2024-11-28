@@ -264,18 +264,18 @@ This is where stuff gets a little bit complicated: computing jumps. When generat
 
 After all of these, **and disabling optimizations #3 and #4** we get the following benchmark:
 
-| Program Name  | JIT    | Interpreter | Instructions |
-| :-----------: | :----: | :---------: | :----------: |
-| hanoi.b       | ~3.85s | ~11.70s     | 17511        |
-| mandlebrot.b  | ~0.70s | ~8.45s      | 4108         |
-| factor.b      | ~0.45s | ~3.30s      | 1252         |
-| collatz.b     | ~0.20s | ~1.80s      | 237          |
+| Program Name  | JIT    | Interpreter | Instructions | Improvement |
+| :-----------: | :----: | :---------: | :----------: | :---------: |
+| hanoi.b       | ~3.85s | ~11.70s     | 17511        | ~3x         |
+| mandlebrot.b  | ~0.70s | ~8.45s      | 4108         | ~8x         |
+| factor.b      | ~0.45s | ~3.30s      | 1252         | ~6x         |
+| collatz.b     | ~0.20s | ~1.80s      | 237          | ~9x         |
 
 After enabling and implementing #3 and #4 in the JIT as well, we get the following:
 
-| Program Name  | JIT    | Interpreter | Instructions |
-| :-----------: | :----: | :---------: | :----------: |
-| hanoi.b       | ~3.85s | ~11.70s     | 17511        |
-| mandlebrot.b  | ~0.70s | ~8.45s      | 4108         |
-| factor.b      | ~0.45s | ~3.30s      | 1252         |
-| collatz.b     | ~0.20s | ~1.80s      | 237          |
+| Program Name  | JIT     | Interpreter | Instructions | Improvement |
+| :-----------: | :-----: | :---------: | :----------: | :---------: |
+| hanoi.b       | ~0.05s  | ~0.30s      | 9547         | ~6x         |
+| mandlebrot.b  | ~0.50s  | ~6.70s      | 3153         | ~13x        |
+| factor.b      | ~0.25s  | ~2.10s      | 1057         | ~8x         |
+| collatz.b     | ~0.50ms | ~9.10ms     | 216          | ~19x        |
