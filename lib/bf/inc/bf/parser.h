@@ -13,7 +13,8 @@ enum {
     IN,
     // Composite instructions from here.
     CLR,
-    ADDCLR
+    ADDCLR,
+    MOVNZ,
 };
 typedef uint16_t bf_instruction_type_t;
 

@@ -30,7 +30,7 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
     jit_movi(JIT_V0, (jit_word_t)engine->memory);   // V0 is the memory pointer
     // R0 is working register.
 
-    jit_pointer_t jump;
+    jit_pointer_t start_jump;
 
     for(uint32_t index = 0; index < config.program.size; index++)
     {
@@ -57,8 +57,8 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
             if(instruction->args > 0)
             {
                 // Branch if R1 is zero, this will be emitted in the later branch.
-                jit_pointer_t end_label = _jit_new_node_pww(engine->jit_state, jit_code_beqi, jit_forward(), JIT_R0, 0);
-                dynarray_push_back(&loopEnd, &end_label);
+                jit_pointer_t end_jump = _jit_new_node_pww(engine->jit_state, jit_code_beqi, jit_forward(), JIT_R0, 0);
+                dynarray_push_back(&loopEnd, &end_jump);
 
                 jit_pointer_t start_label = jit_label();
                 dynarray_push_back(&loopStart, &start_label);
@@ -72,9 +72,9 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
                 jit_pointer_t end_label = *(jit_pointer_t*)dynarray_get(loopEnd, loopEnd.size - 1);
                 dynarray_pop_back(&loopEnd);
 
-                jump = _jit_new_node_pww(engine->jit_state, jit_code_bnei, NULL, JIT_R0, 0);
+                start_jump = _jit_new_node_pww(engine->jit_state, jit_code_bnei, NULL, JIT_R0, 0);
                 jit_patch(end_label);
-                jit_patch_at(jump, start_label);
+                jit_patch_at(start_jump, start_label);
             }
             break;
 
@@ -113,6 +113,22 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
             jit_str_c(JIT_R0, JIT_R1);                          // memory[P + args] = R1
             jit_movi(JIT_R0, 0);                                // R0 = 0
             jit_str_c(JIT_V0, JIT_R0);                          // memory[P] = 0
+            break;
+
+            // P += args while memory[P] != 0
+        case MOVNZ:
+            {
+                // This shouldn't actually improve anything JIT-wise as it should generate the same code as the unwrapped sequence.
+                jit_ldr_c(JIT_R0, JIT_V0);
+                jit_pointer_t start_jump = _jit_new_node_pww(engine->jit_state, jit_code_beqi, jit_forward(), JIT_R0, 0);
+                jit_pointer_t start_label = jit_label();
+                jit_addi(JIT_V0, JIT_V0, instruction->args);
+                jit_ldr_c(JIT_R0, JIT_V0);
+                jit_pointer_t end_jump = _jit_new_node_pww(engine->jit_state, jit_code_bnei, NULL, JIT_R0, 0);
+                jit_patch(start_jump);
+                jit_patch_at(end_jump, start_label);
+                break;
+            }
             break;
         }
     }

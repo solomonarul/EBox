@@ -279,3 +279,24 @@ After enabling and implementing #3 and #4 in the JIT as well, we get the followi
 | mandlebrot.b  | ~0.50s  | ~6.70s      | 3153         | ~13x        |
 | factor.b      | ~0.25s  | ~2.10s      | 1057         | ~8x         |
 | collatz.b     | ~0.50ms | ~9.10ms     | 216          | ~19x        |
+
+### The limits of infinitely replacing loops for JITs:
+
+There is a limit to replacing and optimizing code, especially for the JIT.
+
+In this case, I replaced the next hotloop in mandlebrot.b, 3j xm -1j, with a single instruction. This speeds up the interpreter by a whole lot but there appears to be a problem:
+
+I can't just replace this with anything meaningful in the case of JIT, as such I am forced to reproduce the sequence as its basic instructions, thus being the same.
+
+We can see the interpreter starting to catch up to the JIT now:
+
+| Program Name  | JIT     | Interpreter | Instructions | Improvement |
+| :-----------: | :-----: | :---------: | :----------: | :---------: |
+| hanoi.b       | ~0.05s  | ~0.30s      | 9533         | ~6x         |
+| mandlebrot.b  | ~0.50s  | ~4.00s      | 2905         | ~8x         |
+| factor.b      | ~0.25s  | ~2.00s      | 1035         | ~8x         |
+| collatz.b     | ~0.50ms | ~6.80ms     | 202          | ~15x        |
+
+But this is where we should either stop or try to find more meaningfull loops to replace as just replacing loops for eternity will just make us the entire programs with a single instruction, which funnily enough is exactly what the JIT does!
+
+Now this is where all meaningfull optimizations should end for now.

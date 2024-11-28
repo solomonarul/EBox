@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
         .output = stdout,
         .performance_info = {
             .enabled = false,
-            .log_file = NULL
+            .log_file = fopen("performance.log", "w")
         },
         .program = bf_parse_string(input_data, true, true, true)
     };
@@ -49,6 +49,7 @@ int main(int argc, char* argv[])
     bf_interpreter_init(&engine, config);
     bf_interpreter_run(&engine);
     dynarray_free(config.program);
+    fclose(config.performance_info.log_file);
     bf_interpreter_free(engine);*/
     return EXIT_STATUS_SUCCESS;
 }

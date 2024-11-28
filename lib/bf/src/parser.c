@@ -44,11 +44,17 @@ void bf_check_hotloops(dynarray_t* result)
         {JMP, 6}, {ADD, -1}, {MOV, 0}, {ADD, 1}, {MOV, 0}, {JMP, -4}
     };
 
-    static uint8_t known_loop_count = 2;
+    // 3j xm -1j
+    static const bf_instruction_t MOVNZ_loop[] = {
+        {JMP, 3}, {MOV, 0}, {JMP, -1}
+    };
+
+    static uint8_t known_loop_count = 3;
 
     static const bf_known_loop_t known_loops[] = {
         { CLR_loop, 3, {CLR, 0} },
-        { ADDCLR_loop, 6, {ADDCLR, -1} }
+        { ADDCLR_loop, 6, {ADDCLR, -1} },
+        { MOVNZ_loop, 3, {MOVNZ, -1} }
     };
 
     for(uint32_t index = 0; index < known_loop_count; index++)
@@ -216,6 +222,10 @@ void bf_print_internal_form(dynarray_t input, FILE* output)
 
         case ADDCLR:
             fprintf(output, "ADDCLR\n");
+            break;
+
+        case MOVNZ:
+            fprintf(output, "MOVNZ\n");
             break;
         }
     }

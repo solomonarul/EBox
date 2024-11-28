@@ -100,6 +100,11 @@ void bf_interpreter_step(bf_interpreter_t* engine)
         engine->memory[engine->I] = 0;
         engine->PC++;
         break;
+    case MOVNZ:
+        while(engine->memory[engine->I] != 0)
+            engine->I += instruction->args;
+        engine->PC++;
+        break;
     }
 }
 
@@ -151,7 +156,10 @@ void bf_interpreter_print_performance_info(bf_interpreter_t engine, FILE* output
                 break;       
             case ADDCLR:
                 fprintf(output, "adcl ");
-                break;     
+                break;
+            case MOVNZ:
+                fprintf(output, "movnz ");
+                break; 
             }
             if(current_instruction->type == JMP && current_instruction->args < 0)
                 break;
