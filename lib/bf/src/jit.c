@@ -1,6 +1,7 @@
 #include "bf/jit.h"
 #include "parser.h"
 #include "util/meta.h"
+#include <lightning.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -134,4 +135,10 @@ void bf_jit_run(bf_jit_t* engine)
 void bf_jit_free(bf_jit_t engine)
 {
     free(engine.memory);
+
+    #define _jit engine.jit_state
+
+    jit_destroy_state();
+
+    #undef _jit
 }
