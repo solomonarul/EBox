@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lightning.h>
 #include <stdio.h>
 #include <stdint.h>
 #include "util/dynarray.h"
@@ -14,6 +15,7 @@ typedef void (*bf_jit_function_t)(void);
 
 typedef struct {
     uint8_t* memory;
+    jit_state_t* jit_state;
     bf_jit_function_t code;
 } bf_jit_t;
 
