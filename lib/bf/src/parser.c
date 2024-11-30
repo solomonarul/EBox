@@ -170,6 +170,7 @@ dynarray_t bf_parse_string(const char* input, bool optimize, bool has_input, boo
                 bf_check_hotloops(&result);
             break;
         }
+
         case ',':
             if(!has_input)
                 break;
@@ -186,47 +187,4 @@ dynarray_t bf_parse_string(const char* input, bool optimize, bool has_input, boo
     }
 
     return result;
-}
-
-void bf_print_internal_form(dynarray_t input, FILE* output)
-{
-    bf_instruction_t* current_instruction;
-    for(uint32_t index = 0; index < input.size; index++)
-    {
-        current_instruction = dynarray_get(input, index);
-        switch(current_instruction->type)
-        {
-        case ADD:
-            fprintf(output, "ADD %d\n", current_instruction->args);
-            break;
-
-        case MOV:
-            fprintf(output, "MOV %d\n", current_instruction->args);
-            break;
-
-        case JMP:
-            fprintf(output, "JMP %d\n", current_instruction->args);
-            break;
-
-        case IN:
-            fprintf(output, "IN %d\n", current_instruction->args);
-            break;
-
-        case OUT:
-            fprintf(output, "OUT %d\n", current_instruction->args);
-            break;
-
-        case CLR:
-            fprintf(output, "CLR\n");
-            break;
-
-        case ADDCLR:
-            fprintf(output, "ADDCLR\n");
-            break;
-
-        case MOVNZ:
-            fprintf(output, "MOVNZ\n");
-            break;
-        }
-    }
 }
