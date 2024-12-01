@@ -1,8 +1,8 @@
 #include "util/file.h"
 #include "util/meta.h"
 #include "bf/parser.h"
-#include "bf/jit.h"
-#include "bf/interpreter.h"
+#include "bf/engine/jit.h"
+#include "bf/ui/cli.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,8 +22,8 @@ int main(int argc, char* argv[])
     fclose(input);
 
     bf_jit_config_t config = {
-        .input = stdin,
-        .output = stdout,
+        .input_function = bf_read_from_cli,
+        .output_function = bf_print_to_cli,
         .program = bf_parse_string(input_data, true, true, true)
     };
     free(input_data);
@@ -35,12 +35,8 @@ int main(int argc, char* argv[])
     bf_jit_free(engine);
 
     /*bf_interpreter_config_t config = {
-        .input = stdin,
-        .output = stdout,
-        .performance_info = {
-            .enabled = false,
-            .log_file = fopen("performance.log", "w")
-        },
+        .input_function = bf_read_from_cli,
+        .output_function = bf_print_to_cli,
         .program = bf_parse_string(input_data, true, true, true)
     };
     free(input_data);
@@ -49,7 +45,6 @@ int main(int argc, char* argv[])
     bf_interpreter_init(&engine, config);
     bf_interpreter_run(&engine);
     dynarray_free(config.program);
-    fclose(config.performance_info.log_file);
     bf_interpreter_free(engine);*/
     return EXIT_STATUS_SUCCESS;
 }

@@ -1,13 +1,15 @@
 #pragma once
 
-#include <lightning.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <lightning.h>
 #include "util/dynarray.h"
 
+typedef uint8_t(*bf_input_function_t)(void);
+typedef void(*bf_output_function_t)(uint8_t);
+
 typedef struct {
-    FILE* input;
-    FILE* output;
+    bf_input_function_t input_function;
+    bf_output_function_t output_function;
     dynarray_t program;
 } bf_jit_config_t;
 

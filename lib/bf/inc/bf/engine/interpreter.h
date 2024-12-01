@@ -1,28 +1,19 @@
 #pragma once
 
+#include <stdbool.h>
 #include "util/dynarray.h"
 
-#include <stdio.h>
-#include <stdbool.h>
+typedef uint8_t(*bf_input_function_t)(void);
+typedef void(*bf_output_function_t)(uint8_t);
 
 typedef struct {
-    uint16_t PC;
-    uint32_t count;
-} bf_interpreter_perfomance_info_t;
-
-typedef struct {
-    FILE* input;
-    FILE* output;
+    bf_input_function_t input_function;
+    bf_output_function_t output_function;
     dynarray_t program;
-    struct {
-        bool enabled;
-        FILE* log_file;
-    } performance_info;
 } bf_interpreter_config_t;
 
 typedef struct {
     bf_interpreter_config_t config;
-    dynarray_t performance_info;
     uint16_t PC, I;
     uint8_t* memory;
 } bf_interpreter_t;
@@ -30,5 +21,4 @@ typedef struct {
 void bf_interpreter_init(bf_interpreter_t* engine, bf_interpreter_config_t config);
 void bf_interpreter_step(bf_interpreter_t* engine);
 void bf_interpreter_run(bf_interpreter_t* engine);
-void bf_interpreter_print_performance_info(bf_interpreter_t engine, FILE* output);
 void bf_interpreter_free(bf_interpreter_t engine);

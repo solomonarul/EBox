@@ -1,4 +1,4 @@
-#include "bf/jit.h"
+#include "engine/jit.h"
 #include "parser.h"
 #include "util/meta.h"
 #include <lightning.h>
@@ -78,22 +78,20 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config)
             }
             break;
 
-            // fscanf(input, "%c", &memory[P])
+            // R0 = input_function(input, "%c", &memory[P])
         case IN:
             jit_prepare();
-            jit_pushargi((jit_word_t)config.input);
-            jit_pushargi((jit_word_t)(jit_pointer_t)"%c");
-            jit_pushargr(JIT_V0);
-            jit_finishi((jit_pointer_t)(uintptr_t)fscanf);
+            jit_finishi((jit_pointer_t)(uintptr_t)config.input_function);
+            jit_retval_c(JIT_R0);
+            jit_str_c(JIT_V0, JIT_R0);
             break;
 
-            // fputc(memory[P], output)
+            // output_function(memory[P])
         case OUT:
-            jit_ldr_c(JIT_R0, JIT_V0);                          // R0 = memory[P]
-            jit_prepare();                                      //
-            jit_pushargr_c(JIT_R0);                             // push R0
-            jit_pushargi((jit_word_t)config.output);            // push output
-            jit_finishi((jit_pointer_t)(uintptr_t)fputc);       // call fputc
+            jit_ldr_c(JIT_R0, JIT_V0);                                      // R0 = memory[P]
+            jit_prepare();                                                  //
+            jit_pushargr_c(JIT_R0);                                         // push R0
+            jit_finishi((jit_pointer_t)(uintptr_t)config.output_function);  // call output_function
             break;
 
             // memory[P] = 0
