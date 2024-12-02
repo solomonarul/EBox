@@ -2,10 +2,21 @@
 #include "util/meta.h"
 #include "bf/parser.h"
 #include "bf/engine/jit.h"
-#include "bf/ui/cli.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+
+uint8_t bf_input_function(void)
+{
+    uint8_t result;
+    fscanf(stdin, "%hhu", &result);
+    return result;
+}
+
+void bf_output_function(uint8_t character)
+{
+    fprintf(stdout, "%c", character);
+}
 
 int main(int argc, char* argv[])
 {
@@ -22,8 +33,8 @@ int main(int argc, char* argv[])
     fclose(input);
 
     bf_jit_config_t config = {
-        .input_function = bf_read_from_cli,
-        .output_function = bf_print_to_cli,
+        .input_function = bf_input_function,
+        .output_function = bf_output_function,
         .program = bf_parse_string(input_data, true, true, true)
     };
     free(input_data);
@@ -35,8 +46,8 @@ int main(int argc, char* argv[])
     bf_jit_free(engine);
 
     /*bf_interpreter_config_t config = {
-        .input_function = bf_read_from_cli,
-        .output_function = bf_print_to_cli,
+        .input_function = bf_input_function,
+        .output_function = bf_output_function,
         .program = bf_parse_string(input_data, true, true, true)
     };
     free(input_data);
