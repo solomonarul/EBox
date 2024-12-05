@@ -20,6 +20,23 @@ This is a tool that aims to be able to emulate multiple systems / languages.
 
 > make r
 
+In the [Makefile](Makefile), this runs the emulator using a default startup.ini in the base folder.
+
+Sample ini:
+
+```ini
+# This specifies which platform to emulate.
+[Emulator]
+core=bf
+
+# These specify the data source and destination for the emulator.
+[bf]
+input=cli
+output=cli
+engine=jit
+program=./samples/mandlebrot.b
+```
+
 #### Benchmark:
 
 > make b

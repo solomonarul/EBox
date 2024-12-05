@@ -28,10 +28,4 @@ bwr:
 	@cmake --build build
 
 r:
-	@./build/${TARGET} ./samples/bf/mandlebrot.b
-
-b:
-	@./build/${TARGET}_bench
-
-pp:
-	@awk -F '|' -f ./scripts/bf_parse_performance_log.awk ./performance.log | sort -k1,1nr
+	@./build/${TARGET} startup.ini
