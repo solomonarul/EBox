@@ -27,5 +27,13 @@ bwr:
 	@cmake -B build -S . --preset windows-release
 	@cmake --build build
 
+bvd:
+	@cmake -B build -S . --preset vita-debug
+	@cmake --build build
+
+bvr:
+	@cmake -B build -S . --preset vita-release
+	@cmake --build build
+
 r:
 	@./build/${TARGET} startup.ini

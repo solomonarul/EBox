@@ -38,6 +38,9 @@ int bf_run_from_ini_section(ini_section_t section)
     fclose(input);
 
     ini_data_t* engine_mode = ini_section_get_data(section, "engine");
+    
+    // TODO: parse the inputs and the outputs.
+    
     if(strcmp(engine_mode->value, "jit") == 0)
     {
         bf_jit_config_t config = {
@@ -59,7 +62,8 @@ int bf_run_from_ini_section(ini_section_t section)
         bf_jit_run(&engine);
         bf_jit_free(engine);
     }
-    else if(strcmp(engine_mode->value, "interpreter") == 0){
+    else if(strcmp(engine_mode->value, "interpreter") == 0)
+    {
         bf_interpreter_config_t config = {
             .input_function = bf_cli_input,
             .output_function = bf_cli_output,
@@ -79,7 +83,8 @@ int bf_run_from_ini_section(ini_section_t section)
         dynarray_free(config.program);
         bf_interpreter_free(engine);
     }
-    else {
+    else
+    {
         printf("\nError: Invalid engine mode: '%s'.\n\n", engine_mode->value);
         free(input_data);
         return EXIT_STATUS_FAILURE;
