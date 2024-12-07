@@ -8,8 +8,8 @@ _bruh:
 	@echo "You didn't read the README, did you?"
 
 c:
-	@cmake -E remove_directory build
-	@cmake -E remove_directory .cache
+	@cmake -E remove_directory build && echo "Removed build directory."
+	@cmake -E remove_directory .cache && echo "Removed .cache directory."
 
 bud:
 	@cmake -B build -S . --preset unix-debug
