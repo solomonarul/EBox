@@ -5,6 +5,12 @@
 
 #include <stdlib.h>
 
+uint8_t test_draw_function(uint8_t x, uint8_t y, uint8_t n)
+{
+    printf("INFO: DRW %d %d %d\n", x, y, n);
+    return 0x00;
+}
+
 int c8_run_from_ini_section(ini_section_t section)
 {
     ini_data_t* input_file = ini_section_get_data(section, "program");
@@ -26,7 +32,8 @@ int c8_run_from_ini_section(ini_section_t section)
 
     c8_interpreter_config_t config = {
         .program_size = size,
-        .program = program
+        .program = program,
+        .draw_function = test_draw_function
     };
 
     c8_interpreter_t engine;
