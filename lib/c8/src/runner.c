@@ -4,11 +4,51 @@
 #include "util/ini.h"
 
 #include <stdlib.h>
+#include <string.h>
 
-uint8_t test_draw_function(uint8_t x, uint8_t y, uint8_t n)
+static uint8_t display_data[64 * 32] = {0};
+
+void test_display_function(void)
 {
-    printf("INFO: DRW %d %d %d\n", x, y, n);
-    return 0x00;
+    printf("\x1b[1J");
+    printf("\x1b[H");
+    for(uint8_t y = 0; y < 32; y++)
+    {
+        for(uint8_t x = 0; x < 64; x++)
+        {
+            if(display_data[y * 64 + x] == 1)
+                printf("\x1b[7m \x1b[0m");
+            else
+                printf(" ");
+        }
+        printf("\n");
+    }
+}
+
+void test_clear_function(void)
+{
+    memset(display_data, 0, 64 * 32);
+    test_display_function();
+}
+
+uint8_t test_draw_function(uint8_t x, uint8_t y, uint8_t* sprite, uint8_t n)
+{
+    bool collision = false;
+    for(uint8_t index = 0; index < n; index++)
+    {
+        for(uint8_t position = 0; position < 8; position++)
+        {
+            if(sprite[index] & (1 << position))
+            {
+                if(display_data[(y + index) * 64 + x + (7 - position)] == 1)
+                    collision = true;
+                display_data[(y + index) * 64 + x + (7 - position)] ^= 1;
+            }
+        }
+    }
+
+    test_display_function();
+    return collision;
 }
 
 int c8_run_from_ini_section(ini_section_t section)
@@ -33,7 +73,8 @@ int c8_run_from_ini_section(ini_section_t section)
     c8_interpreter_config_t config = {
         .program_size = size,
         .program = program,
-        .draw_function = test_draw_function
+        .draw_function = test_draw_function,
+        .clear_function = test_clear_function
     };
 
     c8_interpreter_t engine;

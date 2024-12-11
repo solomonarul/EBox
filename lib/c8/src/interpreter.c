@@ -14,6 +14,7 @@ void c8_interpreter_init(c8_interpreter_t* interpreter, c8_interpreter_config_t 
     interpreter->memory = calloc(0x10000, sizeof(uint8_t));
     memcpy(interpreter->memory + interpreter->PC, config.program, config.program_size);
     interpreter->draw_function = config.draw_function;
+    interpreter->clear_function = config.clear_function;
 }
 
 void c8_interpreter_run(c8_interpreter_t* interpreter)
@@ -41,7 +42,7 @@ void c8_interpreter_run(c8_interpreter_t* interpreter)
             {
             // CLS.
             case 0xE0:
-                printf("WARNING: Unimplemented opcode 0x00E0: CLS.\n");
+                interpreter->clear_function();
                 break;
             default:
                 ERROR_UNKNOWN_OPCODE();
@@ -72,7 +73,7 @@ void c8_interpreter_run(c8_interpreter_t* interpreter)
 
         // DRW, X, Y, n
         case 0xD: 
-            VF = interpreter->draw_function != NULL ? interpreter->draw_function(VX, VY, OOON) : 0x00;
+            VF = interpreter->draw_function != NULL ? interpreter->draw_function(VX, VY, interpreter->memory + VI, OOON) : 0x00;
             break;
 
         default:
