@@ -34,7 +34,10 @@ core=bf
 input=cli
 output=cli
 engine=jit
-program=./samples/mandlebrot.b
+program=./samples/bf/mandlebrot.b
+
+[c8]
+program=./samples/c8/timendus/1-chip8-logo.ch8
 ```
 
 #### Benchmark:

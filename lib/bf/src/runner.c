@@ -2,9 +2,15 @@
 
 #include "parser.h"
 #include "util/file.h"
+
+#ifdef ENABLE_JIT
 #include "engine/jit.h"
+#endif
+
 #include "engine/interpreter.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 uint8_t bf_cli_input(void)
 {
@@ -40,29 +46,7 @@ int bf_run_from_ini_section(ini_section_t section)
     ini_data_t* engine_mode = ini_section_get_data(section, "engine");
     
     // TODO: parse the inputs and the outputs.
-    
-    if(strcmp(engine_mode->value, "jit") == 0)
-    {
-        bf_jit_config_t config = {
-            .input_function = bf_cli_input,
-            .output_function = bf_cli_output,
-            .program = bf_parse_string(input_data, true, true, true)
-        };
-        free(input_data);
-
-        if(config.program.size == 0)
-        {
-            printf("\nError: Failed to parse the Brainfuck program.\n\n");
-            return EXIT_STATUS_FAILURE;
-        }
-
-        bf_jit_t engine;
-        bf_jit_init(&engine, config);
-        dynarray_free(config.program);
-        bf_jit_run(&engine);
-        bf_jit_free(engine);
-    }
-    else if(strcmp(engine_mode->value, "interpreter") == 0)
+    if(strcmp(engine_mode->value, "interpreter") == 0)
     {
         bf_interpreter_config_t config = {
             .input_function = bf_cli_input,
@@ -83,6 +67,29 @@ int bf_run_from_ini_section(ini_section_t section)
         dynarray_free(config.program);
         bf_interpreter_free(engine);
     }
+#ifdef ENABLE_JIT
+    else if(strcmp(engine_mode->value, "jit") == 0)
+    {
+        bf_jit_config_t config = {
+            .input_function = bf_cli_input,
+            .output_function = bf_cli_output,
+            .program = bf_parse_string(input_data, true, true, true)
+        };
+        free(input_data);
+
+        if(config.program.size == 0)
+        {
+            printf("\nError: Failed to parse the Brainfuck program.\n\n");
+            return EXIT_STATUS_FAILURE;
+        }
+
+        bf_jit_t engine;
+        bf_jit_init(&engine, config);
+        dynarray_free(config.program);
+        bf_jit_run(&engine);
+        bf_jit_free(engine);
+    }
+#endif
     else
     {
         printf("\nError: Invalid engine mode: '%s'.\n\n", engine_mode->value);

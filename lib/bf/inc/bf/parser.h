@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdio.h>
 #include <stdbool.h>
 #include "util/dynarray.h"
 

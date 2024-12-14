@@ -20,11 +20,11 @@ bur:
 	@cmake --build build
 
 bwd:
-	@cmake -B build -S . --preset windows-debug
+	@cmake -B build -S . --preset windows-debug -DENABLE_JIT=OFF
 	@cmake --build build
 
 bwr:
-	@cmake -B build -S . --preset windows-release
+	@cmake -B build -S . --preset windows-release -DENABLE_JIT=OFF
 	@cmake --build build
 
 bvd:

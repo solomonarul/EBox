@@ -4,6 +4,8 @@ add_subdirectory(lib)
 
 project(EBox)
 
+option(ENABLE_JIT "Enables the Just in Time compiler for this build." ON)
+
 set(
     ${PROJECT_NAME}_COMPILE_FLAGS
     "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-pedantic-errors"

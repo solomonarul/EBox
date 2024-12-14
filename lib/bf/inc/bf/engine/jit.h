@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef ENABLE_JIT
+    #error "JIT file included while JIT is disabled."
+#else
+
 #include <stdint.h>
 #include <lightning.h>
 #include "util/dynarray.h"
@@ -23,3 +27,5 @@ void bf_jit_init(bf_jit_t* engine, bf_jit_config_t config);
 void bf_jit_step(bf_jit_t* engine);
 void bf_jit_run(bf_jit_t* engine);
 void bf_jit_free(bf_jit_t engine);
+
+#endif

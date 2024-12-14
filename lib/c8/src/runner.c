@@ -6,11 +6,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+static FILE* log_file;
 static uint8_t display_data[64 * 32] = {0};
 
 void test_display_function(void)
 {
-    printf("\x1b[1J");
+    printf("\x1b[?25l");
     printf("\x1b[H");
     for(uint8_t y = 0; y < 32; y++)
     {
@@ -23,6 +24,7 @@ void test_display_function(void)
         }
         printf("\n");
     }
+    printf("\x1b[?25h");
 }
 
 void test_clear_function(void)
@@ -51,6 +53,13 @@ uint8_t test_draw_function(uint8_t x, uint8_t y, uint8_t* sprite, uint8_t n)
     return collision;
 }
 
+void test_log_function(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    vfprintf(log_file, format, args);
+}
+
 int c8_run_from_ini_section(ini_section_t section)
 {
     ini_data_t* input_file = ini_section_get_data(section, "program");
@@ -70,19 +79,21 @@ int c8_run_from_ini_section(ini_section_t section)
     uint8_t* program = file_read_all(input);
     fclose(input);
 
+    log_file = fopen("./last.log", "w");
     c8_interpreter_config_t config = {
         .program_size = size,
         .program = program,
         .draw_function = test_draw_function,
-        .clear_function = test_clear_function
+        .clear_function = test_clear_function,
+        .log_function = test_log_function
     };
 
     c8_interpreter_t engine;
     c8_interpreter_init(&engine, config);
     free(program);
     c8_interpreter_run(&engine);
-    c8_interpreter_free(engine);
-
+    c8_interpreter_free(&engine);
+    fclose(log_file);
     return EXIT_STATUS_SUCCESS;
 }
 

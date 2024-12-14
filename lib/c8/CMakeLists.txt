@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(c8)
 
+option(ENABLE_JIT "Enables the Just in Time compiler for this build." ON)
+
 set(
     ${PROJECT_NAME}_COMPILE_FLAGS
     "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-pedantic-errors"
@@ -10,8 +12,15 @@ set(
 set(
     ${PROJECT_NAME}_LIBRARIES
     util
-    lightning
 )
+
+if(ENABLE_JIT)
+    set(
+        ${PROJECT_NAME}_LIBRARIES
+        ${${PROJECT_NAME}_LIBRARIES}
+        lightning
+    )
+endif()
 
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
     set(
@@ -56,3 +65,7 @@ target_compile_options(
     PUBLIC
         ${${PROJECT_NAME}_COMPILE_FLAGS}
 )
+
+if(ENABLE_JIT)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE ENABLE_JIT=ON)
+endif()
